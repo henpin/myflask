@@ -3,57 +3,15 @@
 from tinydb import TinyDB, Query
 import json
 import uuid
+from tinydb_utils import BaseTinyTable
 
 """
 flask-tinyDBクライアント
 """
 
-DB = TinyDB('myflask.json')
+DB = TinyDB('flask.json')
 
-class BaseMyTinyTable(object):
-    """ テーブルラッパ """
-    table = None
-    ForeignKeyCls = None # FKクラス
-    ForeignKeyName = None # FK名
-
-    def __init__(self):
-        self.fk_uuid = None # 外部参照UUID
-
-    def insert(self,*args,**kwargs):
-        """ 汎用インサート """
-        return self.table.insert(*args,**kwargs)
-
-    def search(self,*args,**kwargs):
-        """ 検索 """
-        return self.table.search(*args,**kwargs)
-
-    def all(self):
-        """ 普通にALL """
-        return self.table.search((Query().living == True))
-
-    def get_foreignKey(self,data=None,_uuid=None):
-        """ フォーリングキー検索 """
-        if not data and not _uuid :
-            raise ValueError("なんもないねん")
-        elif _uuid:
-            # そもそも検索基底オブジェクトを抜いてくる
-            data = self.search_data(_uuid)
-            
-        key = data[self.ForeignKeyName]
-        return self.ForeignKeyCls().search_data(_uuid=key)
-
-    def search_fromFK(self,fk_data):
-        """ FKのUUIDで検索 """
-        que = Query()
-        return self.table.search( (que[self.ForeignKeyName] == fk_data["uuid"]) & (que.living == True) )
-
-    def delete(self,_uuid):
-        """ 削除しまつ """
-        # 生存フラグ下げる
-        self.table.update({ "living" : False }, Query().uuid == _uuid)
-
-
-class PDFFormDB(BaseMyTinyTable):
+class PDFFormDB(BaseTinyTable):
     """ PDFフォーム用DB """
     # テーブル
     table = DB.table("pdf_form")
@@ -84,7 +42,7 @@ class PDFFormDB(BaseMyTinyTable):
         return result and result[-1]
 
 
-class PDFFormCommitDataDB(BaseMyTinyTable):
+class PDFFormCommitDataDB(BaseTinyTable):
     """ PDFフォームのコミットデータ """
     # テーブル
     table = DB.table("pdf_form_commitdata")
@@ -95,7 +53,6 @@ class PDFFormCommitDataDB(BaseMyTinyTable):
     def insert_data(self,_json,datetime,form_name,form_uuid):
         """ コミットデータの保存 """
         self.insert({
-            "uuid" : str(uuid.uuid4()),
             "json" : _json,
             "form_name" : form_name,
             "datetime" : datetime,

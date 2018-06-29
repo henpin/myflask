@@ -440,6 +440,10 @@ function App(){
     */
     var now = new Date();
     this.complete_default = function(){
+        // 全デフォルトが無ならとりま無視
+        if (elem_list.every( elem => { return !elem.defaultValue; } )){
+            return ;
+        }
         // 全エレメントを捜査する
         elem_list.forEach( elem => {
             // デフォルト値設定
