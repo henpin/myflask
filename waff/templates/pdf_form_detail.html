@@ -1,0 +1,114 @@
+{% extends "base_min.html" %}
+
+{% block content %}
+<div class="main">
+    <section class="module">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt">{{ form_name }} フォーム情報</h2>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <table id="data-table" class="table table-striped">
+                <thead>
+                    <tr> <!-- メタ名 -->
+                        {% for metaName in metaName_list %}
+                            <th>{{ metaName }}</th>
+                        {% endfor %}
+                        <th>開く</th>
+                        <th>出力</th>
+                        <th>削除</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- データ -->
+                    {% for data in data_list %}
+                        <tr>
+                            {% for metaName in metaName_list %}
+                                <td>{{ data["data"][metaName]["text"] or "-" }}</td>
+                            {% endfor %}
+                            <td><a class="btn btn-sm btn-info" href="{{ url_for("open_form",_uuid=data["uuid"]) }}">開く</a></td>
+                            <td><a class="btn btn-sm btn-success" target="_blank" href="{{ url_for("output_pdf_fromUUID",_uuid=data["uuid"]) }}">出力</a></td>
+                            <td><a class="btn btn-sm btn-danger" href="{{ url_for("delete_formData",_uuid=data["uuid"]) }}">削除</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <section class="module-small">
+        <div class="col-sm-12">    
+            <div class="col-sm-4 col-sm-offset-4">
+                <a class="btn btn-lg btn-primary col-sm-12" href="{{ url_for("load_form",_uuid=uuid) }}" role="button">入力する</a>
+            </div>
+        </div>
+    </section>
+    <section class="module">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt">フォーム公開</h2>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="col-sm-12">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <h4 class="col-sm-2">入力画面の招待URL</h4>
+                    <pre class="text-center col-sm-10">{{ iframe_url }}</pre>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <h4 class="col-sm-2">Webページに埋め込む場合</h4>
+                    <pre class="text-center col-sm-10">{{ iframe_tag }}</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="module-small">
+        <div class="col-sm-12">    
+            <div class="col-sm-4 col-sm-offset-4">
+                <a class="btn btn-lg btn-danger col-sm-12" href="{{ url_for("delete_form",_uuid=uuid) }}" role="button">このフォームを削除する</a>
+            </div>
+        </div>
+    </section>
+    <section class="module">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <h2 class="module-title font-alt">プレビュー</h2>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <iframe src="{{ iframe_url }}" width=1190 height=1800 scrolling="no" style="border:inset;"></iframe>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/> 
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css"/>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script>
+    $(function(){
+        $.extend( $.fn.dataTable.defaults, { 
+            language: { url: "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json" } 
+        }); 
+        $("#data-table").DataTable({
+            columnDefs: [
+                { targets: -1, width: 20 },
+                { targets: -2, width: 20 },
+                { targets: -3, width: 20 },
+            ],
+            buttons: [ 'csv', 'excel', 'print' ],
+            dom: 'Bfrtip',
+        });
+    });
+</script>
+{% endblock %}

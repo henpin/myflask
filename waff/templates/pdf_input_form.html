@@ -1,0 +1,55 @@
+<html>
+<head>
+    <!-- Default stylesheets-->
+    <link href="/static/assets/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Template specific stylesheets-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Volkhov:400i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+    <!-- Main stylesheet and color file-->
+    <link href="/static/assets/css/style.css" rel="stylesheet">
+
+    <!-- bootstrap jquery -->
+    <script src="/static/assets/lib/jquery/dist/jquery.js"></script>
+    <script src="/static/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="main">
+        <div class="row col-sm-12">
+            <input type="hidden" id="form-name" value="{{ form_name }}">
+            <div class="col-sm-12">
+                <canvas id="c"></canvas>
+                <img src="{{ png_file }}" id="my-image" style="display:none;">
+            </div>
+            <div class="col-sm-12" style="position:fixed;bottom:10px;">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <!--<button class="btn btn-lg btn-info col-sm-6" id="gen_pdf">PDF出力</button>-->
+                    <button class="btn btn-lg btn-success col-sm-6 col-sm-offset-3" id="commit">入力完了</button>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="uuid" value="{{ uuid }}">
+        <div id="file_dl"></div>
+    </div>
+
+    <script src="/static/js/fabric.min.js"></script>
+    <script src="/static/js/pdf_form.js"></script>
+    <!-- 注入スクリプト -->
+    <script>
+        /* あれば読む */
+        var json_data = '{{ json_data }}';
+        $(function(){
+            if (json_data){ 
+                // デコードする
+                json_data = $('<div/>').html(json_data).text();
+                console.log(json_data);
+                app.load_dataJson(json_data); 
+                app.complete_default(); // 入力補完
+            }
+        });
+    </script>
+    <style type="text/css">
+        .canvas-container { margin : auto; }
+    </style>
+</body>
+</html>

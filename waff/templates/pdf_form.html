@@ -1,0 +1,104 @@
+{% extends "base_min.html" %}
+{% block content %}
+<div class="main">
+     <section class="module-small">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt">{{ form_name }}</h2>
+            <div class="module-subtitle font-serif">{{ title }} </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            {% if subtitle=="form_design" %} <!-- フォームデザイン時 -->
+            <div class="col-sm-8">
+                <canvas id="c"></canvas>
+                <img src="{{ png_file }}" id="my-image" style="display:none;">
+            </div>
+            <div class="col-sm-4" style="background-color:#e8e8e8;height:100%">
+                <div class="col-sm-12">
+                    <h3> オプション</h3>
+                    <div class="form-group">
+                        <label class="control-label">フォーム名</label> 
+                        <input class="form-control" type="text" id="form-name"/>
+                    </div>
+                    <form id="form-area">
+                    </form>
+                    <div class="row col-sm-12" style="">
+                        <!--<button class="btn btn-success col-sm-12" id="load_format_fromDB">フォームデータの読み込み</button>-->
+                        <!--<button class="btn btn-success col-sm-12" id="save_format_2DB">フォームデータの保存</button>-->
+                        <button class="btn btn-success col-sm-12" id="gen_form">フォーム作成</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if subtitle=="form_input" %}<!-- フォーム入力時 -->
+            <input type="hidden" id="form-name" value="{{ form_name }}">
+            <div class="col-sm-12">
+                <canvas id="c"></canvas>
+                <img src="{{ png_file }}" id="my-image" style="display:none;">
+            </div>
+            <div class="col-sm-12" style="position:fixed;bottom:10px;">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <!--<button class="btn btn-lg btn-info col-sm-6" id="gen_pdf">PDF出力</button>-->
+                    <button class="btn btn-lg btn-success col-sm-6 col-sm-offset-3" id="commit">入力完了</button>
+                </div>
+            </div>
+            {% endif%}
+        </div>
+    </section>
+
+    <!--
+    <section>
+        <div class="box">
+            <div class="box-body">
+                <div class="row col-sm-12">
+                    <div class="col-sm-6 row">
+                        <input type="button" class="btn btn-primary col-sm-2" value="JSON化" id="json-btn">
+                        <textarea id="json-out" class="col-sm-10" rows=3></textarea>
+                    </div>
+                    <div class="row col-sm-6">
+                        <input type="button" class="btn btn-primary col-sm-2" value="JSONを読み込む" id="load-json">
+                        <textarea id="json-in" class="col-sm-10" rows=3></textarea>
+                    </div>
+                </div>
+                <div class="row col-sm-12">
+                    <div class="col-sm-6 row">
+                        <input type="button" class="btn btn-primary col-sm-2" value="JSON化ver2" id="json-btn2">
+                        <textarea id="json-out2" class="col-sm-10" rows=3></textarea>
+                    </div>
+                    <div class="col-sm-6 row">
+                        <input type="button" class="btn btn-primary col-sm-2" value="フォーム生成" id="load-json2">
+                        <textarea id="json-in2" class="col-sm-10" rows=3></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    -->
+    <input type="hidden" id="uuid" value="{{ uuid }}">
+    <div id="file_dl"></div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/fabric.min.js"></script>
+    <script src="/static/js/pdf_form.js"></script>
+    <!-- 注入スクリプト -->
+    <script>
+        /* あれば読む */
+        var json_data = '{{ json_data }}';
+        $(function(){
+            if (json_data){ 
+                // デコードする
+                json_data = $('<div/>').html(json_data).text();
+                console.log(json_data);
+                app.load_dataJson(json_data); 
+                app.complete_default(); // 入力補完
+            }
+        });
+    </script>
+    <style type="text/css">
+        .canvas-container { margin : auto; }
+    </style>
+{% endblock %}

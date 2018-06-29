@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main">
+    <section class="module" id="alt-features">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <h2 class="module-title font-alt">ファイルアップロード</h2>
+                </div>
+            </div>
+            <form role="form" action="/file_upload/upload/" method="POST" enctype="multipart/form-data">
+              <div class="">
+                <div class="form-group">
+                  <input type="file" class="dropify" name="word_file" data-default-file="帳票のアップロード" />  
+                </div>
+              <div class="sol-sm-12">
+                <button type="submit" class="btn btn-primary col-sm-12">送信</button>
+              </div>
+            </form>
+        </div>
+    </section>
+    <section class="module">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <h2 class="module-title font-alt">フォーム入力</h2>
+                </div>
+            </div>
+            <div>
+                <ul class="works-grid works-grid-gut works-grid-4 works-hover-d" id="works-grid">
+                  {% for data in form_data %}
+                      <li class="work-item illustration webdesign"><a href="{{ url_for('pdf_form_detail',_uuid=data.uuid) }}">
+                          <div class="work-image"><img src="{{ data.png_file }}" alt="Portfolio Item"></div>
+                          <div class="work-caption font-alt">
+                            <h3 class="work-title">{{ data.form_name }}</h3>
+                            <div class="work-descr">この帳票を入力</div>
+                          </div></a></li>
+                  {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<link rel='stylesheet' href='http://cdn.rawgit.com/JeremyFagis/dropify/master/dist/css/dropify.css' />  
+<script src='http://cdn.rawgit.com/JeremyFagis/dropify/master/dist/js/dropify.js'></script>  
+<script>
+    $(function(){
+        $('.dropify').dropify();
+    })
+</script>
+{% endblock %}
