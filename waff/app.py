@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask
+from flask import Flask, Blueprint
 from flask import render_template, request, Response, jsonify, send_file, make_response, redirect, url_for, flash
 from flask_tinydb import PDFFormDB, PDFFormCommitDataDB
 
@@ -11,8 +11,10 @@ import re
 from datetime import datetime
 import urllib
 
+from module_contextpath import get_contextRootPath
 import pdf_utils
 
+#app = Blueprint("waff",__name__,url_prefix="/waff",template_folder=get_contextRootPath(__file__,"templates"))
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid4())
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -27,7 +29,7 @@ URL_HEADER = "http://127.0.0.1:5000"
 # general
 def is_allowedFile(filename):
     """ docファイルか否か """
-    return any( ext in filename for ext in (".docx",".xlsx") )
+    return any( ext in filename for ext in (".docx",".xlsx",".pptx") )
 
 def gen_pdf_fileName(_uuid):
     """ UUIDからPDFファイル名を作る """
