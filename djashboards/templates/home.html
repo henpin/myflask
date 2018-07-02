@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+
+
+{% block header %}
+<link rel="stylesheet" href="/static/mastodon/mastodon.widget.css" />
+<script type="text/javascript" src="/static/mastodon/mastodon.widget.js"></script>
+<script type="text/javascript" src="/static/mastodon/mastodon.widget-jp.js"></script>
+<script>
+    $(document).ready(function() {
+    // jQUERY is required!
+      var mapi = new MastodonApi({
+        target_selector  : '#myTimeline',
+        instance_uri    : 'https://mstdn.jp',
+        access_token    : '62a9b0119e0486c731236bb43f4d2c4d5e9b29bb914e2dc392a87fbcea3833e8',
+        account_id      : '522217',
+      });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="main" style="overflow:hidden">
+    <div class="row scRow">
+        <div class="col-sm-3 scCol ui-sortable">
+            <div class="col-sm-12">
+                <div class="widget widget-info widget-padding-sm">
+                    <div class="widget-big-int plugin-clock">11<span>:</span>16</div>                            
+                    <div class="widget-subtitle plugin-date">Friday, June 29, 2018</div>
+                    <div class="widget-controls">                                
+                        <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="left" title="Remove Widget"><span class="fa fa-times"></span></a>
+                    </div>                            
+                    <div class="widget-buttons widget-c3">
+                        <div class="col">
+                            <a href="#"><span class="fa fa-clock-o"></span></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><span class="fa fa-bell"></span></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><span class="fa fa-calendar"></span></a>
+                        </div>
+                    </div>                            
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="widget widget-danger widget-padding-sm">                            
+                    <div class="widget-item-left">
+                        <input class="knob" data-width="100" data-height="100" data-min="0" data-max="100" data-displayInput=false data-bgColor="#d6f4ff" data-fgColor="#FFF" value="80%" data-readOnly="true" data-thickness=".2"/>
+                    </div>
+                    <div class="widget-data">
+                        <div class="widget-big-int"><span class="num-count">80</span>%</div>
+                        <div class="widget-title">Disk Space</div>
+                        <div class="widget-subtitle">Total free space</div>                                
+                    </div>                            
+                    <div class="widget-controls">                                
+                        <a href="#" class="widget-control-right"><span class="fa fa-times"></span></a>
+                    </div>                            
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">ちょっとメモ</h3>                               
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <textarea id="codeEditor">ここにメモしてね</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 scCol ui-sortable">                        
+            <!-- START GOOGLE WORLD MAP -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Google World Map</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body panel-body-map" style="height:310px !important;">
+                    <div class="ggmap">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d12960.385043278544!2d139.7360583435973!3d35.6992487330404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x60188cf1ec610e2b%3A0x530894838b7b2b0f!2z5puZ5qmL6aeF!3m2!1d35.692375999999996!2d139.72262999999998!4m5!1s0x60188c233f3ed6af%3A0x25c7e4a8c28e1a8d!2z5p2x5Lqs6YO95paH5Lqs5Yy65pys6YO377yT5LiB55uu77yU77yQ4oiS77yR77yRLCDml6XmnKw!3m2!1d35.7067404!2d139.7636719!5e0!3m2!1sja!2sjp!4v1530239403002" frameborder="0" style="border:0" allowfullscreen height=300></iframe>
+                    </div>
+                </div>
+            </div>
+            <!-- END GOOGLE WORLD MAP-->
+        </div>                     
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="https://nebitemma.slack.com/messages/CB52R5BLJ/" target="_blank">
+                            <img src="/static/img/slack_logo.png" width="100%" height="120">
+                            <div class="mask"> <div class="caption">Slackを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="https://www.chatwork.com/#!rid68881193" target="_blank">
+                            <img src="/static/img/chatwork_logo.png" width="100%" height="120">
+                            <div class="mask"> <div class="caption">Chatworkを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="https://scrango.nebit-tech.com" target="_blank">
+                            <img src="/static/img/scrango_logo.jpg" width="100%" height="120">
+                            <div class="mask"> <div class="caption">Scrangoを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="https://trello.com/b/AMGk4jVA/%E6%9C%AC%E7%A4%BE%E3%82%BF%E3%82%B9%E3%82%AF4%E6%9C%88%E4%B8%AD%E6%97%AC" target="_blank">
+                            <img src="/static/img/trello_logo.png" width="100%" height="120">
+                            <div class="mask"> <div class="caption">trelloを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="http://themifycloud.com/demos/templates/joli/" target="_blank">
+                            <img src="/static/img/joli_logo.png" width="100%" height="120">
+                            <div class="mask"> <div class="caption">Joliを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank">
+                            <img src="/static/img/googledrive_logo.jpg" width="100%" height="120">
+                            <div class="mask"> <div class="caption">Driveを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="https://paper.dropbox.com/?_tk=dropbox_web_web_sidebar&role=personal" target="_blank">
+                            <img src="/static/img/dropbox_logo.png" width="100%" height="120">
+                            <div class="mask"> <div class="caption"> paperを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default" style="padding:0">
+                    <div class="hover-item">
+                        <a href="https://music.amazon.co.jp/home" target="_blank">
+                            <img src="/static/img/amazon_music_logo.png" width="100%" height="120">
+                            <div class="mask"> <div class="caption">Amazonを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="widget widget-default" style="padding:0">                            
+                <a class="twitter-timeline" data-height="500" href="https://twitter.com/ms_rinna?ref_src=twsrc%5Etfw">Tweets by ms_rinna</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+        </div>
+        <div class="col-sm-6">                        
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Googleカレンダー</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body panel-body-map" style="">
+                    <div class="ggmap">
+                        <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=nebit.kaminaga%40gmail.com&amp;color=%231B887A&amp;src=nebit.asari%40gmail.com&amp;color=%232952A3&amp;src=ja.japanese%23holiday%40group.v.calendar.google.com&amp;color=%23125A12&amp;ctz=Asia%2FTokyo" style="border-width:0" width="800" height="530" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>                     
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Slackタイムライン</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="messages messages-img">
+                        {% for text in slack_timeline %}
+                        <div class="item item-visible">
+                            <div class="image"> <img src="/static/joli/assets/images/users/user.jpg" alt="Dmitry Ivaniuk"> </div>                                
+                            <div class="text">
+                                <div class="heading"> <a href="#">Dmitry Ivaniuk</a> <span class="date">08:39</span> </div>                                    
+                                {{ text }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Slackタイムライン2</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="messages messages-img">
+                        {% for text in slack_timeline2 %}
+                        <div class="item item-visible">
+                            <div class="image"> <img src="/static/joli/assets/images/users/user.jpg" alt="Dmitry Ivaniuk"> </div>                                
+                            <div class="text">
+                                <div class="heading"> <a href="#">Dmitry Ivaniuk</a> <span class="date">08:39</span> </div>                                    
+                                {{ text }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Chatworkタイムライン</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="messages messages-img">
+                        {% for timeline in chatwork_timeline %}
+                        <div class="item item-visible">
+                            <div class="image"> <img src="/static/joli/assets/images/users/user2.jpg" alt="Dmitry Ivaniuk"> </div>                                
+                            <div class="text">
+                                <div class="heading"> <a href="#">{{ timeline["speaker"] }}</a> <span class="date">08:39</span> </div>                                    
+                                {{ timeline["text"] }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Gmail未読一覧</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body mail">
+                    {% for mail in mail_list %}
+                    <div class="mail-item mail-unread mail-info">                                    
+                        <div class="mail-checkbox">
+                            <input type="checkbox" class="icheckbox"/>
+                        </div>
+                        <div class="mail-star">
+                            <span class="fa fa-star-o"></span>
+                        </div>
+                        <div class="mail-user">{{ mail["from"] }}</div>                                    
+                        <a href="https://mail.google.com" class="mail-text">{{ mail["subject"] }}</a>                                    
+                        <div class="mail-date">Today, 11:21</div>
+                    </div>
+                    {% endfor %}
+                </div>                            
+            </div>
+            <div class="">
+                <div class="widget widget-default">                            
+                    <iframe id="forecast_embed" type="text/html" frameborder="0" height="280" width="100%" src="http://forecast.io/embed/#lat=35.689487&lon=139.691706& name=Tokyo&units=si"></iframe>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">今日のタスク</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body" style="padding:0">
+                    <!-- task boards -->
+                    <div class="content-frame" style="height:500px;overflow:auto">
+                        <!-- START CONTENT FRAME TOP -->
+                        <div class="content-frame-left">
+                            <div class="form-group">
+                                <h4>タスクを追加:</h4>
+                                <textarea class="form-control push-down-10" id="new_task" rows="4" placeholder="タスクの内容を入力..."></textarea>                            
+                                <button class="btn btn-primary" id="add_new_task"><span class="fa fa-edit"></span> 追加</button>
+                            </div>                        
+                            <div class="form-group push-up-10">
+                                <h4>タスクの検索:</h4>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="fa fa-search"></span></div>
+                                    <input type="text" class="form-control" placeholder="keyword..."/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h4>Task groups:</h4>
+                                <div class="list-group border-bottom">
+                                    <a href="#" class="list-group-item"><span class="fa fa-circle text-primary"></span> Project #1</a>
+                                    <a href="#" class="list-group-item"><span class="fa fa-circle text-success"></span> Personal</a>
+                                    <a href="#" class="list-group-item"><span class="fa fa-circle text-warning"></span> Project #2</a>
+                                    <a href="#" class="list-group-item"><span class="fa fa-circle text-danger"></span> Meetings</a>
+                                    <a href="#" class="list-group-item"><span class="fa fa-circle text-info"></span> Work</a>
+                                </div>
+                            </div>
+                        </div>       
+                        <!-- END CONTENT FRAME TOP -->
+                        
+                        <!-- START CONTENT FRAME BODY -->
+                        <div class="content-frame-body">
+                            <div class="row push-up-10">
+                                <div class="col-md-4">
+                                    <h3>ToDo</h3>
+                                    <div class="tasks" id="tasks">
+                                        <div class="task-item task-info">                                    
+                                            <div class="task-text">スライド作る</div>
+                                            <div class="task-footer">
+                                                <div class="pull-left"><span class="fa fa-clock-o"></span> 3days ago</div>
+                                                <div class="pull-right"><a href="#"><span class="fa fa-chain"></span></a> <a href="#"><span class="fa fa-comments"></span></a></div>
+                                            </div>                                    
+                                        </div>
+                                        <div class="task-item task-success">                                    
+                                            <div class="task-text">Scrango画面作る</div>
+                                            <div class="task-footer">
+                                                <div class="pull-left"><span class="fa fa-clock-o"></span> 3days ago</div>
+                                                <div class="pull-right"><a href="#"><span class="fa fa-chain"></span></a> <a href="#"><span class="fa fa-comments"></span></a></div>
+                                            </div>                                    
+                                        </div>
+                                    </div>                            
+                                </div>
+                                <div class="col-md-4">
+                                    <h3>仕掛中</h3>
+                                    <div class="tasks" id="tasks_progreess">
+                                        <div class="task-item task-warning">
+                                            <div class="task-text">Djash Boardsファーストモック</div>
+                                            <div class="task-footer">
+                                                <div class="pull-left"><span class="fa fa-clock-o"></span> 2h 55min</div>
+                                                <div class="pull-right"><span class="fa fa-pause"></span> 4:51</div>
+                                            </div>                                    
+                                        </div>                            
+                                        <div class="task-drop push-down-10">
+                                            <span class="fa fa-cloud"></span>
+                                            Drag your task here to start it tracking time
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3>完了</h3>
+                                    <div class="tasks" id="tasks_completed">
+                                        <div class="task-item task-danger task-complete">                                    
+                                            <div class="task-text">WAFFファーストモック</div>
+                                            <div class="task-footer">
+                                                <div class="pull-left"><span class="fa fa-clock-o"></span> 15min</div>                                    
+                                            </div>                                    
+                                        </div>
+                                        <div class="task-item task-info task-complete">                                    
+                                            <div class="task-text">Aliquam eget est a dui tincidunt commodo in nec ante.</div>
+                                            <div class="task-footer">
+                                                <div class="pull-left"><span class="fa fa-clock-o"></span> 35min</div>                                    
+                                            </div>                                    
+                                        </div>
+                                        <div class="task-drop">
+                                            <span class="fa fa-cloud"></span>
+                                            Drag your task here to finish it
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>                        
+                        </div>
+                        <!-- END CONTENT FRAME BODY -->
+                    </div>                            
+                </div>                            
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=1900878683363319"
+                    width="100%" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <!-- InstaWidget -->
+                <a href="https://instawidget.net/v/user/takayukiyamadaphoto" id="link-b42f24255fef681f4db1e8025203199c8c8af67215a795981cfe85289d4fa485">@takayukiyamadaphoto</a>
+                <script src="https://instawidget.net/js/instawidget.js?u=b42f24255fef681f4db1e8025203199c8c8af67215a795981cfe85289d4fa485&width=300px"></script>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <iframe src="//db.225225.jp/bp1.php?fw=160&cs=1" marginwidth=0 marginheight=0 frameborder=0 scrolling=no width="100%" height=180><a href=https://ch225.com>ch225世界の株価</a></iframe>
+                <script src="//shoginow.com/today.js"></script>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <div id="_fukugan_3e2a4c1281ef98839b0c4b7554538875"></div><script src="https://fukugan.com/rssimg/loader.js" type="text/javascript"></script><script id="_fukugan_loader_3e2a4c1281ef98839b0c4b7554538875" type="text/javascript">_fukuganLoader.init('3e2a4c1281ef98839b0c4b7554538875', 'https://fukugan.com/rssimg/v2/widget.php?key=3e2a4c1281ef98839b0c4b7554538875');</script>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <div id="_fukugan_bcf8ef9fc111963b585d32b81088a946"></div><script src="https://fukugan.com/rssimg/loader.js" type="text/javascript"></script><script id="_fukugan_loader_bcf8ef9fc111963b585d32b81088a946" type="text/javascript">_fukuganLoader.init('bcf8ef9fc111963b585d32b81088a946', 'https://fukugan.com/rssimg/v2/widget.php?key=bcf8ef9fc111963b585d32b81088a946');</script>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <div id="KabuLinePartsLineContents" class="partsView" data-width="300" data-height="550" data-move="true"></div>
+                <script type="text/javascript" src="https://kabuline.com/blogp/tweet_timeline.js" async charset="UTF-8"></script>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <div id="myTimeline" class="mastodon-timeline mastodon-timeline-dark"></div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="widget widget-default" style="padding:0">
+                <div id="KabuLinePartsRankContents" class="partsView" data-width="300"></div>
+                <script type="text/javascript" src="https://kabuline.com/blogp/tweet_rank.js" async charset="UTF-8"></script>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="widget widget-default" style="padding:0;height:500px">
+                <!-- TradingView Widget BEGIN -->
+                <div class="tradingview-widget-container">
+                  <div id="tradingview_5643c"></div>
+                  <div class="tradingview-widget-copyright">TradingView提供による<a href="https://jp.tradingview.com/symbols/COINBASE-BTCUSD/" rel="noopener" target="_blank"><span class="blue-text">BTCUSDチャート</span></a></div>
+                  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                  <script type="text/javascript">
+                  new TradingView.widget({ "autosize": true, "symbol": "COINBASE:BTCUSD", "interval": "D",
+                      "timezone": "Etc/UTC", "theme": "Light", "style": "1", "locale": "ja",
+                      "toolbar_bg": "#f1f3f6", "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_5643c"
+                  });
+                  </script>
+                </div>
+                <!-- TradingView Widget END -->
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="widget widget-default" style="padding:0;height:500px">
+                <!-- TradingView Widget BEGIN -->
+                <div class="tradingview-widget-container">
+                  <div id="tradingview_9b924"></div>
+                  <div class="tradingview-widget-copyright">TradingView提供による<a href="https://jp.tradingview.com/symbols/NASDAQ-AAPL/" rel="noopener" target="_blank"><span class="blue-text">AAPLチャート</span></a></div>
+                  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                  <script type="text/javascript">
+                  new TradingView.widget( { "autosize": true, "symbol": "NASDAQ:AAPL", "interval": "D", "timezone": "Etc/UTC",
+                      "theme": "Light", "style": "1", "locale": "ja", "toolbar_bg": "#f1f3f6", "enable_publishing": false,
+                      "allow_symbol_change": true, "container_id": "tradingview_9b924" });
+                  </script>
+                </div>
+                <!-- TradingView Widget END -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!-- code editor -->
+<script type='text/javascript' src='/static/joli/js/plugins/icheck/icheck.min.js'></script>
+<script type="text/javascript" src="/static/joli/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js"></script>        
+<script type="text/javascript" src="/static/joli/js/plugins/codemirror/codemirror.js"></script>        
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/xml/xml.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/css/css.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/clike/clike.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/php/php.js"></script>    
+<script type="text/javascript" src="/static/joli/js/plugins/summernote/summernote.js"></script>
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "javascript",
+        indentUnit: 4,
+        indentWithTabs: true,
+        enterMode: "keep",
+    });
+    editor.setSize('100%','280px');
+</script>
+
+<!-- google map -->
+<style>
+    .ggmap {
+    position: relative;
+    padding-bottom: 56.25%;
+    height:0;
+    overflow: hidden;
+    }
+    .ggmap iframe,
+    .ggmap object,
+    .ggmap embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    }
+</style>
+
+<!-- task board -->
+<script type="text/javascript" src="/static/joli/js/plugins/moment.min.js"></script>
+<script type="text/javascript" src="/static/joli/js/plugins/bootstrap/bootstrap-select.js"></script> 
+<script type="text/javascript" src="/static/joli/js/demo_tasks.js"></script> 
+
+<!-- my own -->
+<script>
+    $(function(){
+        $(".row").addClass("scRow");
+        /*$(".widget,.panel-heading").addClass("ui-draggable-handle ui-sortable-handle");*/
+        $(".scRow > div").addClass("scCol ui-sortable").css("min-height","250px").css("min-width","100px");
+        $("ul.panel-controls > li > a > span").css("padding","8px");
+    });
+</script>
+
+<!-- portlet -->
+<script type="text/javascript" src="/static/joli/js/portlet.js"></script>
+{% endblock %}
