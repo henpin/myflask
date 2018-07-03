@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block header %}
 <link rel="stylesheet" href="/static/mastodon/mastodon.widget.css" />
 <script type="text/javascript" src="/static/mastodon/mastodon.widget.js"></script>
@@ -16,13 +15,14 @@
       });
     });
 </script>
+<!--<link rel="stylesheet" href="/static/css/home.css"/>-->
 {% endblock %}
 
 {% block content %}
 <div class="main" style="overflow:hidden">
     <div class="row scRow">
-        <div class="col-sm-3 scCol ui-sortable">
-            <div class="col-sm-12">
+        <div class="col-sm-3">
+            <div class="half">
                 <div class="widget widget-info widget-padding-sm">
                     <div class="widget-big-int plugin-clock">11<span>:</span>16</div>                            
                     <div class="widget-subtitle plugin-date">Friday, June 29, 2018</div>
@@ -42,24 +42,14 @@
                     </div>                            
                 </div>
             </div>
-            <div class="col-sm-12">
-                <div class="widget widget-danger widget-padding-sm">                            
-                    <div class="widget-item-left">
-                        <input class="knob" data-width="100" data-height="100" data-min="0" data-max="100" data-displayInput=false data-bgColor="#d6f4ff" data-fgColor="#FFF" value="80%" data-readOnly="true" data-thickness=".2"/>
-                    </div>
-                    <div class="widget-data">
-                        <div class="widget-big-int"><span class="num-count">80</span>%</div>
-                        <div class="widget-title">Disk Space</div>
-                        <div class="widget-subtitle">Total free space</div>                                
-                    </div>                            
-                    <div class="widget-controls">                                
-                        <a href="#" class="widget-control-right"><span class="fa fa-times"></span></a>
-                    </div>                            
+            <div class="half">
+                <div class="widget widget-default">
+                    <iframe id="forecast_embed" type="text/html" frameborder="0" height="280" width="100%" src="http://forecast.io/embed/#lat=35.689487&lon=139.691706& name=Tokyo&units=si"></iframe>
                 </div>
             </div>
         </div>
         <div class="col-sm-3">
-            <div class="panel panel-default">
+            <div class="panel panel-default half">
                 <div class="panel-heading">
                     <h3 class="panel-title">ちょっとメモ</h3>                               
                     <ul class="panel-controls">
@@ -70,6 +60,19 @@
                 </div>
                 <div class="panel-body">
                     <textarea id="codeEditor">ここにメモしてね</textarea>
+                </div>
+            </div>
+            <div class="panel panel-default half">
+                <div class="panel-heading">
+                    <h3 class="panel-title">ちょっとメモ2</h3>                               
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <textarea id="codeEditor2">ここにメモしてね</textarea>
                 </div>
             </div>
         </div>
@@ -84,8 +87,8 @@
                         <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
                     </ul>
                 </div>
-                <div class="panel-body panel-body-map" style="height:310px !important;">
-                    <div class="ggmap">
+                <div class="panel-body panel-body-map">
+                    <div class="">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d12960.385043278544!2d139.7360583435973!3d35.6992487330404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x60188cf1ec610e2b%3A0x530894838b7b2b0f!2z5puZ5qmL6aeF!3m2!1d35.692375999999996!2d139.72262999999998!4m5!1s0x60188c233f3ed6af%3A0x25c7e4a8c28e1a8d!2z5p2x5Lqs6YO95paH5Lqs5Yy65pys6YO377yT5LiB55uu77yU77yQ4oiS77yR77yRLCDml6XmnKw!3m2!1d35.7067404!2d139.7636719!5e0!3m2!1sja!2sjp!4v1530239403002" frameborder="0" style="border:0" allowfullscreen height=300></iframe>
                     </div>
                 </div>
@@ -96,80 +99,80 @@
     <div class="row">
         <div class="col-sm-3">
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="https://nebitemma.slack.com/messages/CB52R5BLJ/" target="_blank">
-                            <img src="/static/img/slack_logo.png" width="100%" height="120">
+                            <img class="link" src="/static/img/slack_logo.png">
                             <div class="mask"> <div class="caption">Slackを開く</div> </div>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="https://www.chatwork.com/#!rid68881193" target="_blank">
-                            <img src="/static/img/chatwork_logo.png" width="100%" height="120">
+                            <img class="link" src="/static/img/chatwork_logo.png">
                             <div class="mask"> <div class="caption">Chatworkを開く</div> </div>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="https://scrango.nebit-tech.com" target="_blank">
-                            <img src="/static/img/scrango_logo.jpg" width="100%" height="120">
+                            <img class="link" src="/static/img/scrango_logo.jpg">
                             <div class="mask"> <div class="caption">Scrangoを開く</div> </div>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="https://trello.com/b/AMGk4jVA/%E6%9C%AC%E7%A4%BE%E3%82%BF%E3%82%B9%E3%82%AF4%E6%9C%88%E4%B8%AD%E6%97%AC" target="_blank">
-                            <img src="/static/img/trello_logo.png" width="100%" height="120">
+                            <img class="link" src="/static/img/trello_logo.png">
                             <div class="mask"> <div class="caption">trelloを開く</div> </div>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="http://themifycloud.com/demos/templates/joli/" target="_blank">
-                            <img src="/static/img/joli_logo.png" width="100%" height="120">
+                            <img class="link" src="/static/img/joli_logo.png">
                             <div class="mask"> <div class="caption">Joliを開く</div> </div>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank">
-                            <img src="/static/img/googledrive_logo.jpg" width="100%" height="120">
+                            <img class="link" src="/static/img/googledrive_logo.jpg">
                             <div class="mask"> <div class="caption">Driveを開く</div> </div>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="https://paper.dropbox.com/?_tk=dropbox_web_web_sidebar&role=personal" target="_blank">
-                            <img src="/static/img/dropbox_logo.png" width="100%" height="120">
+                            <img class="link" src="/static/img/dropbox_logo.png">
                             <div class="mask"> <div class="caption"> paperを開く</div> </div>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="widget widget-default" style="padding:0">
+                <div class="widget widget-default quarter">
                     <div class="hover-item">
                         <a href="https://music.amazon.co.jp/home" target="_blank">
-                            <img src="/static/img/amazon_music_logo.png" width="100%" height="120">
+                            <img class="link" src="/static/img/amazon_music_logo.png">
                             <div class="mask"> <div class="caption">Amazonを開く</div> </div>
                         </a>
                     </div>
@@ -177,7 +180,7 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <div class="widget widget-default" style="padding:0">                            
+            <div class="widget widget-default">
                 <a class="twitter-timeline" data-height="500" href="https://twitter.com/ms_rinna?ref_src=twsrc%5Etfw">Tweets by ms_rinna</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
         </div>
@@ -191,8 +194,8 @@
                         <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
                     </ul>
                 </div>
-                <div class="panel-body panel-body-map" style="">
-                    <div class="ggmap">
+                <div class="panel-body panel-body-map">
+                    <div class="">
                         <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=nebit.kaminaga%40gmail.com&amp;color=%231B887A&amp;src=nebit.asari%40gmail.com&amp;color=%232952A3&amp;src=ja.japanese%23holiday%40group.v.calendar.google.com&amp;color=%23125A12&amp;ctz=Asia%2FTokyo" style="border-width:0" width="800" height="530" frameborder="0" scrolling="no"></iframe>
                     </div>
                 </div>
@@ -278,7 +281,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-4 half">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Gmail未読一覧</h3>
@@ -304,11 +307,6 @@
                     {% endfor %}
                 </div>                            
             </div>
-            <div class="">
-                <div class="widget widget-default">                            
-                    <iframe id="forecast_embed" type="text/html" frameborder="0" height="280" width="100%" src="http://forecast.io/embed/#lat=35.689487&lon=139.691706& name=Tokyo&units=si"></iframe>
-                </div>
-            </div>
         </div>
         <div class="col-sm-8">
             <div class="panel panel-default">
@@ -320,9 +318,9 @@
                         <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
                     </ul>
                 </div>
-                <div class="panel-body" style="padding:0">
+                <div class="panel-body np">
                     <!-- task boards -->
-                    <div class="content-frame" style="height:500px;overflow:auto">
+                    <div class="content-frame">
                         <!-- START CONTENT FRAME TOP -->
                         <div class="content-frame-left">
                             <div class="form-group">
@@ -419,36 +417,42 @@
     </div>
     <div class="row">
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
-                <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=1900878683363319"
-                    width="100%" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>
+            <div class="widget widget-default">
+                <div id="fb-root"></div>
+                <script>(function(d, s, id) {
+                  var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return;
+                  js = d.createElement(s); js.id = id; js.src = 'https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0&appId=1900878683363319&autoLogAppEvents=1'; fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));</script>
+            <div class="fb-page" data-href="https://www.facebook.com/facebook" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/facebook">Facebook</a></blockquote></div>
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
+            <div class="widget widget-default">
                 <!-- InstaWidget -->
                 <a href="https://instawidget.net/v/user/takayukiyamadaphoto" id="link-b42f24255fef681f4db1e8025203199c8c8af67215a795981cfe85289d4fa485">@takayukiyamadaphoto</a>
                 <script src="https://instawidget.net/js/instawidget.js?u=b42f24255fef681f4db1e8025203199c8c8af67215a795981cfe85289d4fa485&width=300px"></script>
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
+            <div class="widget widget-default half">
                 <iframe src="//db.225225.jp/bp1.php?fw=160&cs=1" marginwidth=0 marginheight=0 frameborder=0 scrolling=no width="100%" height=180><a href=https://ch225.com>ch225世界の株価</a></iframe>
+            </div>
+            <div class="widget widget-default half">
                 <script src="//shoginow.com/today.js"></script>
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
+            <div class="widget widget-default">
                 <div id="_fukugan_3e2a4c1281ef98839b0c4b7554538875"></div><script src="https://fukugan.com/rssimg/loader.js" type="text/javascript"></script><script id="_fukugan_loader_3e2a4c1281ef98839b0c4b7554538875" type="text/javascript">_fukuganLoader.init('3e2a4c1281ef98839b0c4b7554538875', 'https://fukugan.com/rssimg/v2/widget.php?key=3e2a4c1281ef98839b0c4b7554538875');</script>
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
+            <div class="widget widget-default">
                 <div id="_fukugan_bcf8ef9fc111963b585d32b81088a946"></div><script src="https://fukugan.com/rssimg/loader.js" type="text/javascript"></script><script id="_fukugan_loader_bcf8ef9fc111963b585d32b81088a946" type="text/javascript">_fukuganLoader.init('bcf8ef9fc111963b585d32b81088a946', 'https://fukugan.com/rssimg/v2/widget.php?key=bcf8ef9fc111963b585d32b81088a946');</script>
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
+            <div class="widget widget-default">
                 <div id="KabuLinePartsLineContents" class="partsView" data-width="300" data-height="550" data-move="true"></div>
                 <script type="text/javascript" src="https://kabuline.com/blogp/tweet_timeline.js" async charset="UTF-8"></script>
             </div>
@@ -456,20 +460,92 @@
     </div>
     <div class="row">
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
+            <div class="widget widget-default">
                 <div id="myTimeline" class="mastodon-timeline mastodon-timeline-dark"></div>
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="widget widget-default" style="padding:0">
+            <div class="widget widget-default">
                 <div id="KabuLinePartsRankContents" class="partsView" data-width="300"></div>
                 <script type="text/javascript" src="https://kabuline.com/blogp/tweet_rank.js" async charset="UTF-8"></script>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="https://www.reportlab.com/documentation/" target="_blank">
+                            <img class="link" src="/static/img/python_logo.jpg" width="100%" height="120">
+                            <div class="mask"> <div class="caption">ReportLabを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="http://openpyxl.readthedocs.io/en/stable/" target="_blank">
+                            <img class="link" src="/static/img/python_logo.jpg" width="100%" height="120">
+                            <div class="mask"> <div class="caption">openpyxlを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="http://yamineko.lv9.org/Fabric.js%20Javascript%20Canvas%20Library/Fabric.js%20Javascript%20Canvas%20Library.html" target="_blank">
+                            <img class="link" src="/static/img/python_logo.jpg" width="100%" height="120">
+                            <div class="mask"> <div class="caption">fabric.jsを開く</div> </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="https://trello.com/b/AMGk4jVA/%E6%9C%AC%E7%A4%BE%E3%82%BF%E3%82%B9%E3%82%AF4%E6%9C%88%E4%B8%AD%E6%97%AC" target="_blank">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="http://themifycloud.com/demos/templates/joli/" target="_blank">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="https://paper.dropbox.com/?_tk=dropbox_web_web_sidebar&role=personal" target="_blank">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default quarter">
+                    <div class="hover-item">
+                        <a href="https://music.amazon.co.jp/home" target="_blank">
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6">
-            <div class="widget widget-default" style="padding:0;height:500px">
+            <div class="widget widget-default">
                 <!-- TradingView Widget BEGIN -->
                 <div class="tradingview-widget-container">
                   <div id="tradingview_5643c"></div>
@@ -486,7 +562,7 @@
             </div>
         </div>
         <div class="col-sm-6">
-            <div class="widget widget-default" style="padding:0;height:500px">
+            <div class="widget widget-default">
                 <!-- TradingView Widget BEGIN -->
                 <div class="tradingview-widget-container">
                   <div id="tradingview_9b924"></div>
@@ -519,33 +595,14 @@
 <script type="text/javascript" src="/static/joli/js/plugins/summernote/summernote.js"></script>
 <script>
     var editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        mode: "javascript",
-        indentUnit: 4,
-        indentWithTabs: true,
-        enterMode: "keep",
+        lineNumbers: true, matchBrackets: true, mode: "javascript", indentUnit: 4, indentWithTabs: true, enterMode: "keep",
     });
     editor.setSize('100%','280px');
+    var editor2 = CodeMirror.fromTextArea(document.getElementById("codeEditor2"), {
+        lineNumbers: true, matchBrackets: true, mode: "javascript", indentUnit: 4, indentWithTabs: true, enterMode: "keep",
+    });
+    editor2.setSize('100%','280px');
 </script>
-
-<!-- google map -->
-<style>
-    .ggmap {
-    position: relative;
-    padding-bottom: 56.25%;
-    height:0;
-    overflow: hidden;
-    }
-    .ggmap iframe,
-    .ggmap object,
-    .ggmap embed {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    }
-</style>
 
 <!-- task board -->
 <script type="text/javascript" src="/static/joli/js/plugins/moment.min.js"></script>
@@ -553,6 +610,67 @@
 <script type="text/javascript" src="/static/joli/js/demo_tasks.js"></script> 
 
 <!-- my own -->
+<style>
+.row{
+    height : 500px;
+    margin-bottom:20px;
+}
+.widget{
+    height : 500px;
+    padding : 0px;
+    overflow-y : auto;
+    overflow-x : hidden;
+}
+.panel{
+    height:500px;
+}
+.panel-body{
+    overflow-y:auto;
+    overflow-x : hidden;
+    padding:0px;
+    height:440px;
+}
+.half{
+    height:240px;
+}
+.half .panel{
+    height:240px;
+}
+.half .panel-body{
+    overflow-y:auto;
+    overflow-x : hidden;
+    padding:0px;
+    height:190px;
+}
+.half .widget{
+    height:240px;
+}
+.half iframe{
+    height:220px;
+}
+.quarter{
+    min-height: 110px;
+    height: 110px;
+}
+iframe{
+    height: 440px;
+    overflow-y:auto;
+    overflow-x : hidden;
+    width:100%;
+}
+img.link{
+    height:100%;
+    width:100%;
+}
+.np{
+    padding:0 !important;
+}
+div > .content-frame{
+    overflow-y:auto;
+    overflow-x : hidden;
+    height:440px;
+}
+</style>
 <script>
     $(function(){
         $(".row").addClass("scRow");

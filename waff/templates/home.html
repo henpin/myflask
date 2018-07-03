@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 
+{% block header %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.1.0/intro.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.1.0/introjs.min.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block content %}
 <div class="main">
     <section class="module" id="alt-features">
-        <div class="container">
+        <div class="container" data-intro="ファイルをアップロードしフォームを作成します" data-step="1">
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
                     <h2 class="module-title font-alt">ファイルアップロード</h2>
@@ -21,7 +26,7 @@
         </div>
     </section>
     <section class="module">
-        <div class="container">
+        <div class="container" data-intro="フォームの入力・管理をします" data-step="2">
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
                     <h2 class="module-title font-alt">フォーム入力</h2>
@@ -44,12 +49,22 @@
 </div>
 {% endblock %}
 
+{% block ex_content %}
+<div class="scroll-up" style="display: block;">
+    <button class="btn btn-warning btn-lg intro-btn">
+        <span class="icon-lightbulb" aria-hidden="true"></span> 
+    </button>
+</div>
+{% endblock %}
+
+
 {% block js %}
 <link rel='stylesheet' href='http://cdn.rawgit.com/JeremyFagis/dropify/master/dist/css/dropify.css' />  
 <script src='http://cdn.rawgit.com/JeremyFagis/dropify/master/dist/js/dropify.js'></script>  
 <script>
     $(function(){
         $('.dropify').dropify();
+        $(".intro-btn").click( _ => { introJs().start(); });
     })
 </script>
 {% endblock %}

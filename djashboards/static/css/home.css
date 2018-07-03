@@ -1,0 +1,28 @@
+
+.row{
+    height : 380px;
+}
+.widget{
+    height : 380px;
+    padding : 0px;
+    overflow : auto;
+}
+.panel{
+    height:380px;
+}
+.half{
+    height:160px;
+}
+.quarter{
+    height: 95px;
+}
+
+iframe{
+    height: 380px;
+    overflow:auto;
+}
+
+img{
+    height:100%;
+    width:100%;
+}
