@@ -64,17 +64,46 @@
             </div>
             <div class="panel panel-default half">
                 <div class="panel-heading">
-                    <h3 class="panel-title">ちょっとメモ2</h3>                               
-                    <ul class="panel-controls">
-                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                    <div class="panel-title-box">
+                        <h3>チャット・チャンネル状態</h3>
+                        <span>Projects activity</span>
+                    </div>                                    
+                    <ul class="panel-controls" style="margin-top: 2px;">
                         <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
-                        <li><a href="#" class=""><span class="fa fa-cog"></span></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
+                            <ul class="dropdown-menu">
+                                <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
+                                <li><a href="#" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
+                            </ul>                                        
+                        </li>                                        
                     </ul>
                 </div>
-                <div class="panel-body">
-                    <textarea id="codeEditor2">ここにメモしてね</textarea>
+                <div class="panel-body panel-body-table">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="50%">チャンネル名</th>
+                                    <th width="20%">状態</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for channel_data in channel_dataList %}
+                                <tr>
+                                    <td>{{ channel_data.channel_name }}</td>
+                                    {% if channel_data.unread_count %}
+                                    <td><span class="label label-danger">{{ channel_data.unread_count }}</span></td>
+                                    {% else %}
+                                    <td><span class="label label-success">未読無し</span></td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            </div> <!-- END PROJECTS BLOCK -->
         </div>
         <div class="col-md-6 scCol ui-sortable">                        
             <!-- START GOOGLE WORLD MAP -->
@@ -503,18 +532,18 @@
             </div>
             <div class="col-sm-6">
                 <div class="widget widget-default quarter">
-                    <div class="hover-item">
-                        <a href="https://trello.com/b/AMGk4jVA/%E6%9C%AC%E7%A4%BE%E3%82%BF%E3%82%B9%E3%82%AF4%E6%9C%88%E4%B8%AD%E6%97%AC" target="_blank">
-                        </a>
-                    </div>
+                    <blockquote class="trello-board-compact">
+                      <a href="https://trello.com/b/AMGk4jVA/%E6%9C%AC%E7%A4%BE%E3%82%BF%E3%82%B9%E3%82%AF4%E6%9C%88%E4%B8%AD%E6%97%AC">Trello Board</a>
+                    </blockquote>
+                    <script src="https://p.trellocdn.com/embed.min.js"></script>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="widget widget-default quarter">
-                    <div class="hover-item">
-                        <a href="http://themifycloud.com/demos/templates/joli/" target="_blank">
-                        </a>
-                    </div>
+                    <blockquote class="trello-board-compact">
+                      <a href="https://trello.com/b/5AAKJUNb/scrango%E3%83%BBwaff%E3%82%BF%E3%82%B9%E3%82%AF">Trello Board</a>
+                    </blockquote>
+                    <script src="https://p.trellocdn.com/embed.min.js"></script>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -540,6 +569,23 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="widget widget-default">
+                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vR7EGN4yLtpXyb91LajTzOfhob8cbs4MS7TrFF41aNMXUZGVjF8fwHSxC7cy3P2ZI9nFTVcZp5aZZ09/embed?start=false&loop=false&delayms=3000" frameborder="0" width="480" height="299" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="widget widget-default">
+                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vT0c2lnnWYGjN3SW62GIl3eaR-xAVeMHKmMqoPdVwEZ2yxyd80qvqDXcg0KrYxYvd4hRQthiqNmmEXl/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="widget widget-default">
+                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTBdLrgXTcjwvc6K2BJQhobsvY3Ta6yGTNi287LxK0EbQKl6_22j6k-4LRyg1zSgFfETGorGDa_U1u4/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
             </div>
         </div>
     </div>

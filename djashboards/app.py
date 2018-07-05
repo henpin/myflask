@@ -29,7 +29,6 @@ app.secret_key = str(uuid.uuid4())
 # Globals
 
 
-
 # Generals
 
 
@@ -60,12 +59,21 @@ def home():
         "title" : u"HOME",
     }
 
+    # チャット未読状況取得
+    channel_dataList = slack.get_channelInfo(["C9EQ2L2TA","C5HN61S3B","CB52R5BLJ","CALJSB350"]) # Slackのチャンネル情報を抜く
+    chatwork_unread_count = chatwork.get_unreads() # チャットワークの未読情報
+    channel_dataList.append({
+        "channel_name" : "chatwork",
+        "unread_count" : int(chatwork_unread_count)
+    })
+
     # 全フォームデータ抜く
     return render_template("home.html",
         slack_timeline = slack_timeline,
         slack_timeline2 = slack_timeline2,
         mail_list = mail_list,
         chatwork_timeline = chatwork_timeline,
+        channel_dataList = channel_dataList,
         **ns
         )
 

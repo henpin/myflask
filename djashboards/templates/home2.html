@@ -1,0 +1,1044 @@
+{% extends "base.html" %}
+
+{% block header %}
+<link rel="stylesheet" href="/static/mastodon/mastodon.widget.css" />
+<script type="text/javascript" src="/static/mastodon/mastodon.widget.js"></script>
+<script type="text/javascript" src="/static/mastodon/mastodon.widget-jp.js"></script>
+<script>
+    $(document).ready(function() {
+    // jQUERY is required!
+      var mapi = new MastodonApi({
+        target_selector  : '#myTimeline',
+        instance_uri    : 'https://mstdn.jp',
+        access_token    : '62a9b0119e0486c731236bb43f4d2c4d5e9b29bb914e2dc392a87fbcea3833e8',
+        account_id      : '522217',
+      });
+    });
+</script>
+<!--<link rel="stylesheet" href="/static/css/home.css"/>-->
+{% endblock %}
+
+{% block content %}
+<div style="overflow:hidden"  class="main">
+    <div class="row scRow">
+        <div class="col-sm-3">
+            <div class="half">
+                <div class="widget widget-info widget-padding-sm">
+                    <div class="widget-big-int plugin-clock">
+                        11
+                        <span>
+                            16
+                        </span>
+                    </div>
+                    <div class="widget-subtitle plugin-date">
+                        Friday, June 29, 2018
+                    </div>
+                    <div class="widget-controls">
+                        <a data-toggle="tooltip"  href="#"  data-placement="left"  class="widget-control-right widget-remove"  title="Remove Widget">
+                            <span class="fa fa-times">
+                            </span>
+                        </a>
+                    </div>
+                    <div class="widget-buttons widget-c3">
+                        <div class="col">
+                            <a href="#">
+                                <span class="fa fa-clock-o">
+                                </span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="#">
+                                <span class="fa fa-bell">
+                                </span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="#">
+                                <span class="fa fa-calendar">
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="half">
+                <div class="widget widget-default">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="half">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            ちょっとメモ
+                        </h3>
+                        <ul class="panel-controls">
+                            <li>
+                                <a href="#"  class="panel-collapse">
+                                    <span class="fa fa-angle-down">
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"  class="panel-refresh">
+                                    <span class="fa fa-refresh">
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"  class="">
+                                    <span class="fa fa-cog">
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-body panel-body-map">
+                    </div>
+                </div>
+            </div>
+            <div class="half">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            チャット・チャンネル状態
+                        </h3>
+                        <ul class="panel-controls">
+                            <li>
+                                <a href="#"  class="panel-collapse">
+                                    <span class="fa fa-angle-down">
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"  class="panel-refresh">
+                                    <span class="fa fa-refresh">
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"  class="">
+                                    <span class="fa fa-cog">
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-body panel-body-map">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 scCol">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        gooleマップ
+                    </h3>
+                    <ul class="panel-controls">
+                        <li>
+                            <a href="#"  class="panel-collapse">
+                                <span class="fa fa-angle-down">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"  class="panel-refresh">
+                                <span class="fa fa-refresh">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"  class="">
+                                <span class="fa fa-cog">
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-body panel-body-map">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="https://nebitemma.slack.com/messages/CB52R5BLJ/"  target="_blank">
+                            <img src="/static/img/slack_logo.png"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    Slackを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="https://www.chatwork.com/#!rid68881193"  target="_blank">
+                            <img src="/static/img/chatwork_logo.png"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    Chatworkを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="https://scrango.nebit-tech.com"  target="_blank">
+                            <img src="/static/img/scrango_logo.jpg"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    Scrangoを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="https://trello.com/b/AMGk4jVA/%E6%9C%AC%E7%A4%BE%E3%82%BF%E3%82%B9%E3%82%AF4%E6%9C%88%E4%B8%AD%E6%97%AC"  target="_blank">
+                            <img src="/static/img/trello_logo.png"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    trelloを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="http://themifycloud.com/demos/templates/joli/"  target="_blank">
+                            <img src="/static/img/joli_logo.png"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    Joliを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="https://drive.google.com/drive/u/0/my-drive"  target="_blank">
+                            <img src="/static/img/googledrive_logo.jpg"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    Driveを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="https://paper.dropbox.com/?_tk=dropbox_web_web_sidebar&role=personal"  target="_blank">
+                            <img src="/static/img/dropbox_logo.png"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    paperを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href=""  target="_blank">
+                            <img src=""  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="widget widget-default">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Googleカレンダー
+                    </h3>
+                    <ul class="panel-controls">
+                        <li>
+                            <a href="#"  class="panel-collapse">
+                                <span class="fa fa-angle-down">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"  class="panel-refresh">
+                                <span class="fa fa-refresh">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"  class="">
+                                <span class="fa fa-cog">
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-body panel-body-map">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Slackタイムライン
+                </h3>
+                <ul class="panel-controls">
+                    <li>
+                        <a href="#"  class="panel-collapse">
+                            <span class="fa fa-angle-down">
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"  class="panel-refresh">
+                            <span class="fa fa-refresh">
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"  class="">
+                            <span class="fa fa-cog">
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-body panel-body-map">
+                <div class="messages messages-img">
+                    {% for text in message_object %}
+                    <div class="item item-visible">
+                        <div class="image">
+                            <img src="/static/joli/assets/images/users/user.jpg"  alt="Dmitry Ivaniuk">
+                            </img>
+                        </div>
+                        <div class="text">
+                            <div class="heading">
+                                <a href="#">
+                                    Dmitry Ivaniuk
+                                </a>
+                                <span class="date">
+                                    08:39
+                                </span>
+                                {{ text }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Slackタイムライン2
+                </h3>
+                <ul class="panel-controls">
+                    <li>
+                        <a href="#"  class="panel-collapse">
+                            <span class="fa fa-angle-down">
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"  class="panel-refresh">
+                            <span class="fa fa-refresh">
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"  class="">
+                            <span class="fa fa-cog">
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-body panel-body-map">
+                <div class="messages messages-img">
+                    {% for text in message_object %}
+                    <div class="item item-visible">
+                        <div class="image">
+                            <img src="/static/joli/assets/images/users/user.jpg"  alt="Dmitry Ivaniuk">
+                            </img>
+                        </div>
+                        <div class="text">
+                            <div class="heading">
+                                <a href="#">
+                                    Dmitry Ivaniuk
+                                </a>
+                                <span class="date">
+                                    08:39
+                                </span>
+                                {{ text }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Chatworkタイムライン
+                </h3>
+                <ul class="panel-controls">
+                    <li>
+                        <a href="#"  class="panel-collapse">
+                            <span class="fa fa-angle-down">
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"  class="panel-refresh">
+                            <span class="fa fa-refresh">
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"  class="">
+                            <span class="fa fa-cog">
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-body panel-body-map">
+                <div class="messages messages-img">
+                    {% for text in message_object %}
+                    <div class="item item-visible">
+                        <div class="image">
+                            <img src="/static/joli/assets/images/users/user.jpg"  alt="Dmitry Ivaniuk">
+                            </img>
+                        </div>
+                        <div class="text">
+                            <div class="heading">
+                                <a href="#">
+                                    Dmitry Ivaniuk
+                                </a>
+                                <span class="date">
+                                    08:39
+                                </span>
+                                {{ text }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="half">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Gmail未読一覧
+                        </h3>
+                        <ul class="panel-controls">
+                            <li>
+                                <a href="#"  class="panel-collapse">
+                                    <span class="fa fa-angle-down">
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"  class="panel-refresh">
+                                    <span class="fa fa-refresh">
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"  class="">
+                                    <span class="fa fa-cog">
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-body panel-body-map">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        今日のタスク
+                    </h3>
+                    <ul class="panel-controls">
+                        <li>
+                            <a href="#"  class="panel-collapse">
+                                <span class="fa fa-angle-down">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"  class="panel-refresh">
+                                <span class="fa fa-refresh">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"  class="">
+                                <span class="fa fa-cog">
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-body panel-body-map"  title="今日のタスク">
+                    <div class="content-frame">
+                        START CONTENT FRAME TOP
+                        <div class="content-frame-left">
+                            <div class="form-group">
+                                <h4>
+                                    タスクを追加:
+                                </h4>
+                                <textarea rows="4"  placeholder="タスクの内容を入力..."  class="form-control push-down-10"  id="new_task">
+                                </textarea>
+                                <button class="btn btn-primary"  id="add_new_task">
+                                    <span class="fa fa-edit">
+                                    </span>
+                                    追加
+                                </button>
+                            </div>
+                            <div class="form-group push-up-10">
+                                <h4>
+                                    タスクの検索:
+                                </h4>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <span class="fa fa-search">
+                                        </span>
+                                    </div>
+                                    <input type="text"  placeholder="keyword..."  class="form-control">
+                                    </input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h4>
+                                    Task groups:
+                                </h4>
+                                <div class="list-group border-bottom">
+                                    <a href="#"  class="list-group-item">
+                                        <span class="fa fa-circle text-primary">
+                                        </span>
+                                        Project #1
+                                    </a>
+                                    <a href="#"  class="list-group-item">
+                                        <span class="fa fa-circle text-success">
+                                        </span>
+                                        Personal
+                                    </a>
+                                    <a href="#"  class="list-group-item">
+                                        <span class="fa fa-circle text-warning">
+                                        </span>
+                                        Project #2
+                                    </a>
+                                    <a href="#"  class="list-group-item">
+                                        <span class="fa fa-circle text-danger">
+                                        </span>
+                                        Meetings
+                                    </a>
+                                    <a href="#"  class="list-group-item">
+                                        <span class="fa fa-circle text-info">
+                                        </span>
+                                        Work
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-frame-body">
+                            <div class="row push-up-10">
+                                <div class="col-md-4">
+                                    <h3>
+                                        ToDo
+                                    </h3>
+                                    <div class="tasks"  id="tasks">
+                                        <div class="task-item task-info">
+                                            <div class="task-text">
+                                                
+                                            </div>
+                                            <div class="task-footer">
+                                                <div class="pull-left">
+                                                    <span class="fa fa-clock-o">
+                                                    </span>
+                                                    3days ago
+                                                </div>
+                                                <div class="pull-right">
+                                                    <a href="#">
+                                                        <span class="fa fa-chain">
+                                                        </span>
+                                                    </a>
+                                                    <a href="#">
+                                                        <span class="fa fa-comments">
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="task-item task-info">
+                                            <div class="task-text">
+                                                
+                                            </div>
+                                            <div class="task-footer">
+                                                <div class="pull-left">
+                                                    <span class="fa fa-clock-o">
+                                                    </span>
+                                                    3days ago
+                                                </div>
+                                                <div class="pull-right">
+                                                    <a href="#">
+                                                        <span class="fa fa-chain">
+                                                        </span>
+                                                    </a>
+                                                    <a href="#">
+                                                        <span class="fa fa-comments">
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3>
+                                        仕掛中
+                                    </h3>
+                                    <div class="tasks"  id="tasks">
+                                        <div class="task-drop push-down-10">
+                                            <span class="fa fa-cloud">
+                                            </span>
+                                        </div>
+                                        Drag your task here to start it tracking time
+                                        <div class="task-item task-info">
+                                            <div class="task-text">
+                                                
+                                            </div>
+                                            <div class="task-footer">
+                                                <div class="pull-left">
+                                                    <span class="fa fa-clock-o">
+                                                    </span>
+                                                    3days ago
+                                                </div>
+                                                <div class="pull-right">
+                                                    <a href="#">
+                                                        <span class="fa fa-chain">
+                                                        </span>
+                                                    </a>
+                                                    <a href="#">
+                                                        <span class="fa fa-comments">
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3>
+                                        完了
+                                    </h3>
+                                    <div class="tasks"  id="tasks">
+                                        <div class="task-drop">
+                                            <span class="fa fa-cloud">
+                                            </span>
+                                        </div>
+                                        <div class="task-item task-info">
+                                            <div class="task-text">
+                                                
+                                            </div>
+                                            <div class="task-footer">
+                                                <div class="pull-left">
+                                                    <span class="fa fa-clock-o">
+                                                    </span>
+                                                    3days ago
+                                                </div>
+                                                <div class="pull-right">
+                                                    <a href="#">
+                                                        <span class="fa fa-chain">
+                                                        </span>
+                                                    </a>
+                                                    <a href="#">
+                                                        <span class="fa fa-comments">
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="task-item task-info">
+                                            <div class="task-text">
+                                                
+                                            </div>
+                                            <div class="task-footer">
+                                                <div class="pull-left">
+                                                    <span class="fa fa-clock-o">
+                                                    </span>
+                                                    3days ago
+                                                </div>
+                                                <div class="pull-right">
+                                                    <a href="#">
+                                                        <span class="fa fa-chain">
+                                                        </span>
+                                                    </a>
+                                                    <a href="#">
+                                                        <span class="fa fa-comments">
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="fb-page" data-href="https://www.facebook.com/facebook" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/facebook">Facebook</a></blockquote></div>
+            <div class="widget widget-default">
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="widget widget-default">
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="half">
+                <div class="widget widget-default">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="half">
+                <div class="widget widget-default">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="half">
+                <div class="widget widget-default">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="half">
+                <div class="widget widget-default">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="half">
+                <div class="widget widget-default">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="half">
+                <div class="widget widget-default">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="https://www.reportlab.com/documentation/"  target="_blank">
+                            <img src="/static/img/python_logo.jpg"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    ReportLabを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="http://openpyxl.readthedocs.io/en/stable/"  target="_blank">
+                            <img src="/static/img/python_logo.jpg"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    openpyxlを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href="http://yamineko.lv9.org/Fabric.js%20Javascript%20Canvas%20Library/Fabric.js%20Javascript%20Canvas%20Library.html"  target="_blank">
+                            <img src="/static/img/python_logo.jpg"  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    fabric.jsを開く
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="quarter">
+                    <div class="widget widget-default">
+                        <%struct-content%>
+                        </%struct-content%>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="quarter">
+                    <div class="widget widget-default">
+                        <%struct-content%>
+                        </%struct-content%>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href=""  target="_blank">
+                            <img src=""  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href=""  target="_blank">
+                            <img src=""  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-default">
+                    <div class="hover-item">
+                        <a href=""  target="_blank">
+                            <img src=""  width="100%"  class="link"  height="120">
+                            </img>
+                            <div class="mask">
+                                <div class="caption">
+                                    
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="widget widget-default">
+                <%struct-content%>
+                </%struct-content%>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="widget widget-default">
+                <%struct-content%>
+                </%struct-content%>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="widget widget-default">
+                <%struct-content%>
+                </%struct-content%>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="widget widget-default">
+                <%struct-content%>
+                </%struct-content%>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="widget widget-default">
+                <%struct-content%>
+                </%struct-content%>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<!-- code editor -->
+<script type='text/javascript' src='/static/joli/js/plugins/icheck/icheck.min.js'></script>
+<script type="text/javascript" src="/static/joli/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js"></script>        
+<script type="text/javascript" src="/static/joli/js/plugins/codemirror/codemirror.js"></script>        
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/xml/xml.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/css/css.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/clike/clike.js"></script>
+<script type='text/javascript' src="/static/joli/js/plugins/codemirror/mode/php/php.js"></script>    
+<script type="text/javascript" src="/static/joli/js/plugins/summernote/summernote.js"></script>
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
+        lineNumbers: true, matchBrackets: true, mode: "javascript", indentUnit: 4, indentWithTabs: true, enterMode: "keep",
+    });
+    editor.setSize('100%','280px');
+    var editor2 = CodeMirror.fromTextArea(document.getElementById("codeEditor2"), {
+        lineNumbers: true, matchBrackets: true, mode: "javascript", indentUnit: 4, indentWithTabs: true, enterMode: "keep",
+    });
+    editor2.setSize('100%','280px');
+</script>
+
+<!-- task board -->
+<script type="text/javascript" src="/static/joli/js/plugins/moment.min.js"></script>
+<script type="text/javascript" src="/static/joli/js/plugins/bootstrap/bootstrap-select.js"></script> 
+<script type="text/javascript" src="/static/joli/js/demo_tasks.js"></script> 
+
+<!-- my own -->
+<style>
+.row{
+    height : 500px;
+    margin-bottom:20px;
+}
+.widget{
+    height : 500px;
+    padding : 0px;
+    overflow-y : auto;
+    overflow-x : hidden;
+}
+.panel{
+    height:500px;
+}
+.panel-body{
+    overflow-y:auto;
+    overflow-x : hidden;
+    padding:0px;
+    height:440px;
+}
+.half{
+    height:240px;
+}
+.half .panel{
+    height:240px;
+}
+.half .panel-body{
+    overflow-y:auto;
+    overflow-x : hidden;
+    padding:0px;
+    height:190px;
+}
+.half .widget{
+    height:240px;
+}
+.half iframe{
+    height:220px;
+}
+.quarter{
+    min-height: 110px;
+    height: 110px;
+}
+iframe{
+    height: 440px;
+    overflow-y:auto;
+    overflow-x : hidden;
+    width:100%;
+}
+img.link{
+    height:100%;
+    width:100%;
+}
+.np{
+    padding:0 !important;
+}
+div > .content-frame{
+    overflow-y:auto;
+    overflow-x : hidden;
+    height:440px;
+}
+</style>
+<script>
+    $(function(){
+        $(".row").addClass("scRow");
+        /*$(".widget,.panel-heading").addClass("ui-draggable-handle ui-sortable-handle");*/
+        $(".scRow > div").addClass("scCol ui-sortable").css("min-height","250px").css("min-width","100px");
+        $("ul.panel-controls > li > a > span").css("padding","8px");
+    });
+</script>
+
+<!-- portlet -->
+<script type="text/javascript" src="/static/joli/js/portlet.js"></script>
+{% endblock %}
