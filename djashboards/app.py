@@ -49,11 +49,10 @@ def home():
     # チャットワークタイムライン取得
     chatwork = ChatworkInterface().inject_defaults()
     chatwork_timeline = chatwork.get_message(5)
-    chatwork_timeline.reverse() # 昇順にする
 
     # メール取得
     mail = MailUtils().inject_defaults()
-    mail_list = mail.get_mails() # 未読タイトル一覧取得
+    mail_list = reversed(mail.get_mails()) # 未読タイトル一覧取得 :逆順に
 
     ns = {
         "title" : u"HOME",

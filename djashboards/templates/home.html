@@ -244,12 +244,12 @@
                 </div>
                 <div class="panel-body">
                     <div class="messages messages-img">
-                        {% for text in slack_timeline %}
+                        {% for timeline in slack_timeline %}
                         <div class="item item-visible">
                             <div class="image"> <img src="/static/joli/assets/images/users/user.jpg" alt="Dmitry Ivaniuk"> </div>                                
                             <div class="text">
-                                <div class="heading"> <a href="#">Dmitry Ivaniuk</a> <span class="date">08:39</span> </div>                                    
-                                {{ text }}
+                                <div class="heading"> <a href="#">{{ timeline["speaker"] }}</a> <span class="date">{{ timeline["ts"]}}</span> </div>                                    
+                                {{ timeline["text"] }}
                             </div>
                         </div>
                         {% endfor %}
@@ -269,12 +269,12 @@
                 </div>
                 <div class="panel-body">
                     <div class="messages messages-img">
-                        {% for text in slack_timeline2 %}
+                        {% for timeline in slack_timeline %}
                         <div class="item item-visible">
                             <div class="image"> <img src="/static/joli/assets/images/users/user.jpg" alt="Dmitry Ivaniuk"> </div>                                
                             <div class="text">
-                                <div class="heading"> <a href="#">Dmitry Ivaniuk</a> <span class="date">08:39</span> </div>                                    
-                                {{ text }}
+                                <div class="heading"> <a href="#">{{ timeline["speaker"] }}</a> <span class="date">{{ timeline["ts"]}}</span> </div>                                    
+                                {{ timeline["text"] }}
                             </div>
                         </div>
                         {% endfor %}
@@ -298,7 +298,7 @@
                         <div class="item item-visible">
                             <div class="image"> <img src="/static/joli/assets/images/users/user2.jpg" alt="Dmitry Ivaniuk"> </div>                                
                             <div class="text">
-                                <div class="heading"> <a href="#">{{ timeline["speaker"] }}</a> <span class="date">08:39</span> </div>                                    
+                                <div class="heading"> <a href="#">{{ timeline["speaker"] }}</a> <span class="date">{{ timeline["send_time"] }}</span> </div>                                    
                                 {{ timeline["text"] }}
                             </div>
                         </div>
@@ -331,7 +331,7 @@
                         </div>
                         <div class="mail-user">{{ mail["from"] }}</div>                                    
                         <a href="https://mail.google.com" class="mail-text">{{ mail["subject"] }}</a>                                    
-                        <div class="mail-date">Today, 11:21</div>
+                        <div class="mail-date">{{ mail.date }}</div>
                     </div>
                     {% endfor %}
                 </div>                            
@@ -549,7 +549,9 @@
             <div class="col-sm-6">
                 <div class="widget widget-default quarter">
                     <div class="hover-item">
-                        <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank">
+                        <a href="https://www.slidescarnival.com/ja/" target="_blank">
+                            <img class="link" src="https://www.slidescarnival.com/wp-content/uploads/2015/04/logo_slidesCarnival_square.png" width="100%" height="120">
+                            <div class="mask"> <div class="caption">SLIDES carnivalを開く</div> </div>
                         </a>
                     </div>
                 </div>
@@ -586,6 +588,18 @@
         <div class="col-sm-4">
             <div class="widget widget-default">
                 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTBdLrgXTcjwvc6K2BJQhobsvY3Ta6yGTNi287LxK0EbQKl6_22j6k-4LRyg1zSgFfETGorGDa_U1u4/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="widget widget-default">
+                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ9fkUqiS4VQPRC8ZERd5XPyWCl6YqBaOk-nB6FD2Ip6NXmqUy3d49Fi4VAvcqjVglOylShDYH7oiEs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="widget widget-default">
+                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRlR7WKqKgLqFvVh33ihBjHhjr8kEsbwmL6qjJGCXI6daWbokO77ALKL2CpeO08-gf8fLZXWkcp90Tq/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
             </div>
         </div>
     </div>
