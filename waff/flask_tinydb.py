@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from tinydb import TinyDB, Query
 import json
 import uuid
@@ -50,12 +51,12 @@ class PDFFormCommitDataDB(BaseTinyTable):
     ForeignKeyCls = PDFFormDB # フォームデータにFK
     ForeignKeyName = "form_uuid" # フォーリンキーキー
 
-    def insert_data(self,_json,datetime,form_name,form_uuid):
+    def insert_data(self,_json,form_name,form_uuid):
         """ コミットデータの保存 """
         self.insert({
             "json" : _json,
             "form_name" : form_name,
-            "datetime" : datetime,
+            "datetime" : datetime.now().isoformat(),
             "form_uuid" : form_uuid,
             "living" : True # 活性フラグ
         })

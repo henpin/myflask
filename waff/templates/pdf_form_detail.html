@@ -88,6 +88,24 @@
             </div>
         </div>
     </section>
+    <section class="module">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <h2 class="module-title font-alt">APIデモ</h2>
+                </div>
+            </div>
+            <div class="row">
+                <form id="api-form" action="{{ url_for("inject_data") }}" method="POST">
+                    <div class="form-group">
+                        <input type="hidden" name="uuid" value="{{ uuid }}">
+                        <textarea class="form-control" name="data" rows="10" placeholder="注入JSONを入力"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success col-sm-6 col-sm-offset-3">注入API呼び出し</input>
+                </form>
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}
 
