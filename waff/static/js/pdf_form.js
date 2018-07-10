@@ -99,14 +99,11 @@ function App(){
                 '<div class="form-group col-sm-12 row">'
                     +'<div class="col-sm-12"><label class="control-label">入力欄'+input_num+'</label></div>'
                     +'<div class="col-sm-12">'
-                    +'<input type="text" class="input-name form-control form-input" placeholder="入力項目名" data-target="'+input_num+'">'
-                    /*
-                    +'<select class="form-control col-sm-4">'
-                        +'<option value="サンプル1">フリー入力</option> <option value="サンプル2">数字</option> <option value="サンプル3">郵便番号</option>'
-                        +'<option value="必須">必須</option>'
+                    +'<input type="text" class="input-name form-control form-input" placeholder="入力項目名" data-target="'+input_num+'">' // 項目名
+                    +'<select class="input-type form-control col-sm-4" data-target="'+ input_num+'">' // 入力タイプ
+                        +'<option value="入力欄">入力欄</option> <option value="承認欄">承認欄</option>'
                     +'</select>'
-                    */
-                    +'<input type="text" class="default-value form-control form-input" placeholder="デフォルト値" data-target="'+input_num+'" autocomplete="on" list="dv">'
+                    +'<input type="text" class="default-value form-control form-input" placeholder="デフォルト値" data-target="'+input_num+'" autocomplete="on" list="dv">' // デフォルト値
                     +'<datalist id="dv">'
                     +'<option value="%full_year%">西暦</option> <option value="%lower_year%">西暦下二桁</option> <option value="%jp_year%">和暦</option>'
                     +'<option value="%jp_era%">元号</option> <option value="%month%">月(入力月)</option> <option value="%date%">日(入力日)</option>'
@@ -123,11 +120,16 @@ function App(){
                 elem_holder[$(this).attr("data-target")].item(1).metaName = $(this).val();
 
                 canvas.renderAll(); // レンダリング
-            })
+            });
             $(".default-value").change(function(){
                 // デフォルト値くっつける
                 elem_holder[$(this).attr("data-target")].item(1).defaultValue = $(this).val();
-            })
+            });
+            $(".input-type").change(function(){
+                // データ型くっつける
+                console.log($(this).val());
+                elem_holder[$(this).attr("data-target")].item(1).input_type = $(this).val();
+            });
         });
 
         canvas.on({
@@ -190,7 +192,8 @@ function App(){
                         text : text.text,
                         font : text.fontSize,
                         order : i, // 順序
-                        defaultValue : text.defaultValue // デフォルト値
+                        defaultValue : text.defaultValue, // デフォルト値
+                        input_type : text.input_type // 入力タイプ
                     };
                 }
             })
@@ -242,25 +245,72 @@ function App(){
                 fill: '#e8e8e8', opacity: 0.2,
                 selectable: false,
                 });
-            // textつくる
-            var text = new fabric.IText(data.text, {
-                fontSize:16, textAlign: "center",
-            });
+            rect.set(settings);
 
-            // 属性地束縛
-            text.metaName = metaName; // メタ名ぶっこむ
-            text.defaultValue = data.defaultValue; // デフォルト値埋めとく
+            if (data.input_type == "承認欄"){ // 承認欄
+                // 属性地束縛
+                rect.metaName = metaName; // メタ名ぶっこむ
+                rect.defaultValue = data.defaultValue; // デフォルト値埋めとく
+                
+                // ペースタブルにする
+                self.set_pastable(rect,"seal-id")
 
-            // 共通設定あてる
-            rect.set(settings); text.set(settings);
+            } else { // 入力欄
+                // textつくる
+                var text = new fabric.IText(data.text, {
+                    fontSize:16, textAlign: "center",
+                });
 
-            // エディタぶるディクトつくる
-            self.add_editableRect(rect,text);
-            // タバーにアッペンドする
-            tabber.push(text);
+                // 属性地束縛
+                text.metaName = metaName; // メタ名ぶっこむ
+                text.defaultValue = data.defaultValue; // デフォルト値埋めとく
+
+                // 共通設定あてる
+                text.set(settings);
+
+                // エディタぶるディクトつくる
+                self.add_editableRect(rect,text);
+                // タバーにアッペンドする
+                tabber.push(text);
+            }
         })
         
         canvas.renderAll();
+    }
+
+    /**
+    * ペースタブルにする
+    */
+    this.set_pastable = function(rect,_id){
+        var _rect = rect;
+
+        // クロージャ用画像読み
+        var imgElem = document.getElementById(_id);
+        var imgInst = new fabric.Image(imgElem,{
+            left : _rect.left,
+            top : _rect.top,
+            selectable: false,
+        });
+
+        var flag = false; // 存在フラグ
+        // クリックされたらぺタ
+        canvas.on("mouse:down",function(opt){
+            if ( opt.target == _rect || opt.target == imgInst){
+                if (flag){
+                    canvas.remove(imgInst); // 消す
+                    _rect.text = ""; // テキストを消す
+                    flag = false; // フラグ下げる
+                } else {
+                    canvas.add(imgInst); // 画像つける
+                    _rect.text = $(imgElem).attr("src"); // ソース入れとく
+                    flag = true; // フラグ上げる
+                }
+            }
+        });
+
+        canvas.add(rect);
+        // ElemListにほうりこむ
+        elem_list.push(rect);
     }
 
     /* DOMイベントの初期化 */

@@ -10,7 +10,7 @@ import os
 import re
 import urllib
 
-from module_contextpath import get_contextRootPath
+from module_contextpath import get_contextRootPath, get_contextPath
 import pdf_utils
 
 #app = Blueprint("waff",__name__,url_prefix="/waff",template_folder=get_contextRootPath(__file__,"templates"))
@@ -53,6 +53,12 @@ def home():
     """ ワードファイルアップロード基底ペー ジ"""
     # 全フォームデータ抜く
     form_data = pdfDB.all()
+
+    # 未承認バッジ数くっつけておく
+    for data in form_data :
+        # input_type==承認欄の数を調べる
+        input_data = json.loads(data["json"]) # JSON抜く
+        data["unauthorized"] = len([ _ for _ in input_data.values() if _.get("input_type") == u"承認欄" ])
 
     return render_template("home.html", form_data=form_data)
 
@@ -166,8 +172,20 @@ def generate_pdf(json_data,template_fileName):
                 val["x"]/1.6, val["y"]/1.6 +val["height"]/1.6 # 半分
             )
             text = val["text"]
-             # 書き込み
-            pdf.draw_string(x,y,text)
+
+            # 画像のときは画像を張る
+            if text.startswith("/static"):
+                # サイズ
+                height = 30
+                width = 30
+                # 判子画像
+                img_path = os.path.join(BASE_DIR,text[1:]) # 参照
+                # 張る
+                pdf.paste_image(img_path, (x,y),(height,width))
+
+            else :
+                # 書き込み
+                pdf.draw_string(x,y,text)
 
     return out_fileName
 
@@ -250,6 +268,7 @@ def load_form(_uuid):
             "form_name" : form_name,
             "uuid" : _uuid, # 基本UUID
             "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+            "seal_path" : "/static/img/tanaka.png", # はんこパス
         }
         
         # フォーム作成画面レンダリング

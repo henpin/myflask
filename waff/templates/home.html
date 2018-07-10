@@ -37,6 +37,7 @@
                   {% for data in form_data %}
                       <li class="work-item illustration webdesign"><a href="{{ url_for('pdf_form_detail',_uuid=data.uuid) }}">
                           <div class="work-image"><img src="{{ data.png_file }}" alt="Portfolio Item"></div>
+                          {% if data["unauthorized"] %} <span class="badge unauthorized-badge">未承認 {{ data["unauthorized"] }}</span> {% endif %}
                           <div class="work-caption font-alt">
                             <h3 class="work-title">{{ data.form_name }}</h3>
                             <div class="work-descr">この帳票を入力</div>
@@ -67,4 +68,12 @@
         $(".intro-btn").click( _ => { introJs().start(); });
     })
 </script>
+<style>
+.unauthorized-badge{
+    background-color: red;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
+</style>
 {% endblock %}
