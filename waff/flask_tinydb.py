@@ -31,7 +31,6 @@ class PDFFormDB(BaseTinyTable):
             "json" : _json,
             "png_file" : png_file,
             "metaNames" : metaNames,  # メタネームリスト
-            "living" : True # 活性フラグ
         })
 
     def search_data(self,_uuid):
@@ -58,7 +57,6 @@ class PDFFormCommitDataDB(BaseTinyTable):
             "form_name" : form_name,
             "datetime" : datetime.now().isoformat(),
             "form_uuid" : form_uuid,
-            "living" : True # 活性フラグ
         })
 
     def search_data(self,_uuid):

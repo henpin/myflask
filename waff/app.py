@@ -12,6 +12,8 @@ import urllib
 
 from module_contextpath import get_contextRootPath, get_contextPath
 import pdf_utils
+from plane_node import Node
+from dpy3_force import ForceNodeCollection
 
 #app = Blueprint("waff",__name__,url_prefix="/waff",template_folder=get_contextRootPath(__file__,"templates"))
 app = Flask(__name__)
@@ -22,13 +24,12 @@ MEDIA_DIR = os.path.join(BASE_DIR,"static","media") # /static/media
 pdfDB = PDFFormDB()
 pdf_commitDB = PDFFormCommitDataDB()
 
-PDFApp = pdf_utils.App()
-URL_HEADER = "http://127.0.0.1:5000"
+URL_HEADER = "http://127.0.0.1:8000"
 
 # general
 def is_allowedFile(filename):
     """ docファイルか否か """
-    return any( ext in filename for ext in (".docx",".xlsx",".pptx") )
+    return any( ext in filename for ext in (".docx",".xlsx",".pptx",".doc") )
 
 def gen_pdf_fileName(_uuid):
     """ UUIDからPDFファイル名を作る """
@@ -48,6 +49,7 @@ def gen_png_fileName(_uuid,initial=False,root=True):
 
 
 # Router
+# Home -----------------------------------------------
 @app.route("/")
 def home():
     """ ワードファイルアップロード基底ペー ジ"""
@@ -61,16 +63,6 @@ def home():
         data["unauthorized"] = len([ _ for _ in input_data.values() if _.get("input_type") == u"承認欄" ])
 
     return render_template("home.html", form_data=form_data)
-
-@app.route("/demo/")
-def demo():
-    """ ワードファイルアップロード基底ペー ジ"""
-    return render_template("demo.html")
-
-@app.route("/demo2/")
-def demo2():
-    """ ワードファイルアップロード基底ペー ジ"""
-    return render_template("demo2.html")
 
 @app.route("/file_upload/upload/", methods=["POST"])
 def upload_file():
@@ -114,6 +106,7 @@ def upload_file():
     return render_template("pdf_form.html", **ns)
 
 
+# Detail ----------------------------------------------
 @app.route("/pdf_form/detail/<string:_uuid>", methods=["GET"])
 def pdf_form_detail(_uuid):
     """ フォームの詳細情報 """
@@ -137,7 +130,7 @@ def pdf_form_detail(_uuid):
 
     # iframeフレーズつくる
     iframe_url = URL_HEADER +url_for("load_input_form",_uuid=_uuid) # 埋め込みフォームURL
-    iframe_tag = '<iframe src="%s" width=1190 height=1800 scrolling="no"></iframe>' % (iframe_url,)
+    iframe_tag = '<iframe src="%s" width="100%%" height=1800 scrolling="no" frameborder="0"></iframe>' % (iframe_url,)
 
     # 公開NS
     ns = {
@@ -150,6 +143,47 @@ def pdf_form_detail(_uuid):
 
     # レンダリング
     return render_template("pdf_form_detail.html", metaName_list=metaName_list, data_list = data_list, **ns)
+
+
+# Output ----------------------------------------------------
+@app.route("/pdf_form/output/", methods=["POST"])
+def output_pdf():
+    """ PDFにして返す """
+    # データ抜く
+    json_data = request.form["data"] # JSON
+    _uuid = request.form["uuid"] # uuid抜く
+
+    # テンプレPDF名参照
+    pdf_fileName = gen_pdf_fileName(_uuid)
+
+    # PDF出力
+    out_fileName = generate_pdf(json_data,pdf_fileName)
+
+    # PDF返す
+    return send_file(out_fileName, mimetype='application/pdf')
+
+@app.route("/pdf_form/output_data/<string:_uuid>", methods=["GET"])
+def output_pdf_fromUUID(_uuid):
+    """ UUIDから入力データ抜いてそこから出力 """
+    # UUIDから入力データ参照
+    commit_data = pdf_commitDB.search_data(_uuid) or abort(404)
+    if commit_data :
+        # フォームデータも参照
+        form_data = pdf_commitDB.get_foreignKey(commit_data)
+        
+        # データJSON参照
+        json_data = commit_data["json"]
+        # テンプレPDF名参照 : フォームデータのUUIDより
+        pdf_fileName = gen_pdf_fileName(form_data["uuid"])
+
+        # PDF化する
+        out_fileName = generate_pdf(json_data,pdf_fileName)
+
+        # PDF返す
+        return send_file(out_fileName, mimetype='application/pdf')
+
+    else :
+        return "<p>NotFOund</p>"
 
 def generate_pdf(json_data,template_fileName):
     """ 出力データJSONとテンプレファイル名からPDF生成 """
@@ -189,47 +223,8 @@ def generate_pdf(json_data,template_fileName):
 
     return out_fileName
 
-@app.route("/pdf_form/output/", methods=["POST"])
-def output_pdf():
-    """ PDFにして返す """
-    # データ抜く
-    json_data = request.form["data"] # JSON
-    _uuid = request.form["uuid"] # uuid抜く
 
-    # テンプレPDF名参照
-    pdf_fileName = gen_pdf_fileName(_uuid)
-
-    # PDF出力
-    out_fileName = generate_pdf(json_data,pdf_fileName)
-
-    # PDF返す
-    return send_file(out_fileName, mimetype='application/pdf')
-
-
-@app.route("/pdf_form/output_data/<string:_uuid>", methods=["GET"])
-def output_pdf_fromUUID(_uuid):
-    """ UUIDから入力データ抜いてそこから出力 """
-    # UUIDから入力データ参照
-    commit_data = pdf_commitDB.search_data(_uuid) or abort(404)
-    if commit_data :
-        # フォームデータも参照
-        form_data = pdf_commitDB.get_foreignKey(commit_data)
-        
-        # データJSON参照
-        json_data = commit_data["json"]
-        # テンプレPDF名参照 : フォームデータのUUIDより
-        pdf_fileName = gen_pdf_fileName(form_data["uuid"])
-
-        # PDF化する
-        out_fileName = generate_pdf(json_data,pdf_fileName)
-
-        # PDF返す
-        return send_file(out_fileName, mimetype='application/pdf')
-
-    else :
-        return "<p>NotFOund</p>"
-
-
+# PDFForm --------------------------------------
 @app.route("/pdf_form/form/save/", methods=["POST"])
 def save_form():
     """ フォーム保存 """
@@ -250,7 +245,6 @@ def save_form():
     # ホーム画面に飛ぶ
     flash(u"フォームを保存しました")
     return redirect(url_for('home'))
-
 
 @app.route("/pdf_form/form/<string:_uuid>", methods=["GET"])
 def load_form(_uuid):
@@ -277,6 +271,18 @@ def load_form(_uuid):
     else :
         return "<p>Not Found</p>"
 
+@app.route("/pdf_form/form/delete/<string:_uuid>", methods=["GET"])
+def delete_form(_uuid):
+    """ フォーム削除 """
+    # 消す
+    pdfDB.delete(_uuid)
+
+    # ホームに飛ばす
+    flash(u"フォームを削除しました")
+    return redirect(url_for('home'))
+
+
+# InputForm -----------------------------------------
 @app.route("/pdf_form/input_form/<string:_uuid>", methods=["GET"])
 def load_input_form(_uuid):
     """ フォーム読み込む """
@@ -296,7 +302,6 @@ def load_input_form(_uuid):
 
     else :
         return "<p>Not Found</p>"
-
 
 @app.route("/pdf_form/form/open/<string:_uuid>", methods=["GET"])
 def open_form(_uuid):
@@ -327,17 +332,6 @@ def open_form(_uuid):
     else :
         return "<p>Not Found</p>"
 
-@app.route("/pdf_form/form/delete/<string:_uuid>", methods=["GET"])
-def delete_form(_uuid):
-    """ フォーム削除 """
-    # 消す
-    pdfDB.delete(_uuid)
-
-    # ホームに飛ばす
-    flash(u"フォームを削除しました")
-    return redirect(url_for('home'))
-
-
 @app.route("/pdf_form/commit/", methods=["POST"])
 def commit_data():
     """ フォーム入力内容保存 """
@@ -357,7 +351,6 @@ def commit_data():
     flash(u"フォームを送信しました")
     return redirect(url_for('pdf_form_detail',_uuid=_uuid))
 
-
 @app.route("/pdf_form/form_data/delete/<string:_uuid>", methods=["GET"])
 def delete_formData(_uuid):
     """ 消す """
@@ -371,6 +364,7 @@ def delete_formData(_uuid):
     return redirect(url_for('pdf_form_detail',_uuid=form_data["uuid"]))
 
 
+# API ---------------------------------------------------------
 @app.route("/pdf_form/inject/", methods=["POST"])
 def inject_data():
     """ 値注入API """
@@ -407,6 +401,7 @@ def pdf_form_names():
     return json.dumps([ form_data["form_name"] for form_data in pdfDB.all() ])
 
 
+# Model API ----------------------------------------
 @app.route("/pdf_form/get_json/<string:_uuid>", methods=["GET"])
 def pdf_form_getJson(_uuid):
     """ UUIDからフォーム検索 """
@@ -414,6 +409,18 @@ def pdf_form_getJson(_uuid):
     form_data = pdfDB.search_data(_uuid) or abort(404) 
 
     return json.dumps(form_data)
+
+@app.route("/pdf_form/get_json/", methods=["POST"])
+def pdf_form_getJson2():
+    """ POST ver """
+    # UUIDリストを抜く
+    uuid_list = json.loads(request.form["uuid_list"])
+
+    # くるくるして返す
+    result = [ pdfDB.search_data(_uuid) for _uuid in uuid_list ]
+
+    return json.dumps(result)
+
 
 @app.route("/pdf_form/get_json/from_name/<string:name>", methods=["GET"])
 def pdf_form_getJson_fromName(name):
@@ -424,6 +431,15 @@ def pdf_form_getJson_fromName(name):
     # 返す
     return json.dumps(form_data)
 
+
+# API -------------------------------------------
+
+
+# Etc --------------------------------------------
+@app.route("/demo/")
+def demo():
+    """ ワードファイルアップロード基底ペー ジ"""
+    return render_template("demo.html")
 
 
 if __name__ == "__main__":
