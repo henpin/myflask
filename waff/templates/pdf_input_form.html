@@ -12,6 +12,12 @@
     <!-- bootstrap jquery -->
     <script src="/static/assets/lib/jquery/dist/jquery.js"></script>
     <script src="/static/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- noty -->
+    <script type='text/javascript' src='/static/assets/noty/jquery.noty.js'></script>
+    <script type='text/javascript' src='/static/assets/noty/layouts/topCenter.js'></script>
+    <script type='text/javascript' src='/static/assets/noty/layouts/topLeft.js'></script>
+    <script type='text/javascript' src='/static/assets/noty/layouts/topRight.js'></script>            
+    <script type='text/javascript' src='/static/assets/noty/themes/default.js'></script>
 </head>
 <body>
     <div class="main">
@@ -21,12 +27,14 @@
                 <canvas id="c"></canvas>
                 <img src="{{ png_file }}" id="my-image" style="display:none;">
             </div>
+            {% if commit_mode != "interactive" %}
             <div class="col-sm-12" style="position:fixed;bottom:10px;">
                 <div class="col-sm-8 col-sm-offset-2">
                     <!--<button class="btn btn-lg btn-info col-sm-6" id="gen_pdf">PDF出力</button>-->
                     <button class="btn btn-lg btn-success col-sm-6 col-sm-offset-3" id="commit">入力完了</button>
                 </div>
             </div>
+            {% endif %}
         </div>
         <input type="hidden" id="uuid" value="{{ uuid }}">
         <div id="file_dl"></div>
@@ -44,8 +52,16 @@
                 json_data = $('<div/>').html(json_data).text();
                 console.log(json_data);
                 app.load_dataJson(json_data); 
-                app.complete_default(); // 入力補完
+                app.complete_default({{ 'true' if open_mode else 'false' }}); // 入力補完
             }
+            // URL注入
+            app.set_commit_url("{{ url_for('commit', _uuid=commit_uuid) }}");
+            {% if commit_mode == "ajax" %}
+                app.set_commit_mode("ajax");
+            {% elif commit_mode == "interactive" %}
+                app.set_commit_url("{{ url_for('commit_inject', _uuid=commit_uuid) }}");
+                app.set_commit_mode("interactive");
+            {% endif %}
         });
     </script>
     <style type="text/css">

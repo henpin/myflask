@@ -26,8 +26,8 @@ class PDFFormDB(BaseTinyTable):
 
         # do インサーション
         self.insert({
-            "form_name" : form_name,
             "uuid" : _uuid,
+            "form_name" : form_name,
             "json" : _json,
             "png_file" : png_file,
             "metaNames" : metaNames,  # メタネームリスト

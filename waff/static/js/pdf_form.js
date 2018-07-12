@@ -8,9 +8,17 @@ function App(){
     var tabber = [];
     var now_tabber = 0;
     var mode = "creation"; // 実行モード
+    var commit_mode = "form";
+    var uuid = ""; // UUID
+    self.set_commit_mode = function(mode){ 
+        console.log("commit_mode:" +mode);
+        commit_mode = mode; 
+        } /* セッター */
 
     /* エントリーポイント*/
     this.init = function(){
+        // UUID
+        uuid = self.get_uuid();
         self.init_canvas();
         self.init_keyEvents();
         self.init_canvasEvents();
@@ -101,7 +109,7 @@ function App(){
                     +'<div class="col-sm-12">'
                     +'<input type="text" class="input-name form-control form-input" placeholder="入力項目名" data-target="'+input_num+'">' // 項目名
                     +'<select class="input-type form-control col-sm-4" data-target="'+ input_num+'">' // 入力タイプ
-                        +'<option value="入力欄">入力欄</option> <option value="承認欄">承認欄</option>'
+                        +'<option value="input">入力欄</option> <option value="承認欄">承認欄</option> <option value="checkbox">チェックボックス</option>'
                     +'</select>'
                     +'<input type="text" class="default-value form-control form-input" placeholder="デフォルト値" data-target="'+input_num+'" autocomplete="on" list="dv">' // デフォルト値
                     +'<datalist id="dv">'
@@ -132,6 +140,7 @@ function App(){
             });
         });
 
+        // タッチイベント
         canvas.on({
             'touch:gesture': function(e) {
                 if (e.e.touches && e.e.touches.length == 2) {
@@ -168,6 +177,21 @@ function App(){
                 }
             },
         });
+
+        // ズームイベント
+        /*
+        canvas.on('mouse:wheel', function(opt) {
+          var delta = opt.e.deltaY;
+          var pointer = canvas.getPointer(opt.e,true);
+          var zoom = canvas.getZoom();
+          zoom = zoom - delta/500;
+          if (zoom > 20) zoom = 20;
+          if (zoom < 0.01) zoom = 0.01;
+          canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+          opt.e.preventDefault();
+          opt.e.stopPropagation();
+        });
+        */
     }
 
     /* フォームデータJSONを生成 */
@@ -203,12 +227,14 @@ function App(){
                 var metaName = elem.metaName; // メタ名
                 // データ追加
                 data[metaName] = {
-                    x : elem.left ,
-                    y : elem.top,
-                    width : elem.width,
-                    height : elem.height,
+                    x : elem.base_x ,
+                    y : elem.base_y,
+                    width : elem.base_width, // 読み込み時保存された値
+                    height : elem.base_height, // 読み込み時保存された値
                     text : elem.text,
                     font : elem.fontSize,
+                    defaultValue : elem.defaultValue,
+                    input_type : elem.input_type,
                 };
             })
         }
@@ -228,6 +254,19 @@ function App(){
         Object.keys(json_data).forEach( metaName => {
             // データ
             var data = json_data[metaName];
+            var input_type = data.input_type; // 入力タイプ
+
+            // データ束縛関数
+            var data_binding = elem => {
+                elem.metaName = metaName;
+                elem.defaultValue = data.defaultValue;
+                elem.input_type = input_type;
+                // 読み込み時の値の保存
+                elem.base_width = data.width;
+                elem.base_height = data.height;
+                elem.base_x = data.x;
+                elem.base_y = data.y;
+            }
 
             // 基礎データ抽出
             var settings = {
@@ -247,10 +286,9 @@ function App(){
                 });
             rect.set(settings);
 
-            if (data.input_type == "承認欄"){ // 承認欄
+            if (input_type == "承認欄"){ // 承認欄
                 // 属性地束縛
-                rect.metaName = metaName; // メタ名ぶっこむ
-                rect.defaultValue = data.defaultValue; // デフォルト値埋めとく
+                data_binding(rect)
                 
                 // ペースタブルにする
                 self.set_pastable(rect,"seal-id")
@@ -262,14 +300,13 @@ function App(){
                 });
 
                 // 属性地束縛
-                text.metaName = metaName; // メタ名ぶっこむ
-                text.defaultValue = data.defaultValue; // デフォルト値埋めとく
+                data_binding(text)
 
                 // 共通設定あてる
                 text.set(settings);
 
                 // エディタぶるディクトつくる
-                self.add_editableRect(rect,text);
+                self.add_editableRect(rect,text,input_type);
                 // タバーにアッペンドする
                 tabber.push(text);
             }
@@ -372,28 +409,69 @@ function App(){
     エディタぶるなRectをアッペンド
     新版。普通にやるver
     */
-    this.add_editableRect = function(rect,text){
+    var active_text = null; // フォーカス対象テキスト
+    this.add_editableRect = function(rect,text,input_type){
         /* 大きさ変更等不可 */
         text.hasControls = false;
         text.hasBorders = false;
 
-        // ワンクリックで入力モード
+        /* 入力イベント定義 */
         var _rect = rect; // for closure
         var _text = text; // for closure
-        canvas.on("mouse:down",function(opt){
-            if ( opt.target == _text || opt.target == _rect ){
-                _text.enterEditing();
-                _text.selectAll()
-                //text.dirty = false;
-                //canvas.renderAll()
-            } else {
-                _text.exitEditing();
-            }
-        })
+        // 入力タイプで分岐
+        if (input_type == "checkbox"){
+            // フォントサイズだけ調整
+            _text.set({ fontSize:25 });
+            // クリックでチェック化
+            canvas.on("mouse:down",function(opt){
+                if ( opt.target == _text || opt.target == _rect ){
+                    if (_text.text){ _text.text = ""; } // あればなくす
+                    else { _text.text = "✓"; } // チェックマークつける
+                    _text.do_centering(); // センタリング。センタリング設定関数で束縛される
+                    setTimeout(_ => {
+                        _text.exitEditing(); // エグジットイベントをディスパッチ
+                        },500);
+                }
+            });
+        } else {
+            // ワンクリックで入力モード
+            canvas.on("mouse:down",function(opt){
+                if ( opt.target == _text || opt.target == _rect ){
+                    _text.enterEditing();
+                    _text.selectAll()
+                } else {
+                    if (active_text){
+                        active_text.exitEditing();
+                        active_text = null; // フォーカス抜く
+                    }
+                }
+            });
+        }
 
-        canvas.on("text:editing:exited", function(){
-            _text.dirty = false;
-            canvas.renderAll();
+        canvas.on("text:editing:exited", function(opt){
+            if ( opt.target == _text ){
+                _text.dirty = false;
+                canvas.renderAll();
+                active_text = null; // フォーカス抜く
+
+                /* インタラクティブ送信モード*/
+                if ( commit_mode == "interactive" ){
+                    // データ構築
+                    var data = {};
+                    data[_text.metaName] = _text.text;
+                    $.post(URL_FOR_COMMIT,{ "data": JSON.stringify(data) }); // Ajaxで送信
+                    noty({text: 'データを送信しました', layout: 'topCenter', type: 'information', timeout:2000 });
+                }
+            }
+        });
+        canvas.on("text:editing:entered", function(opt){
+            if ( opt.target == _text ){
+                setTimeout(_ =>{ // 時差処理
+                    active_text = opt.target; // アクティブなターゲットとする
+                    },1000) 
+                self.update_now_tabber(opt.target); // タバー更新
+                //canvas.zoomToPoint({ x: _text.left, y: _text.top }, 1.5); // zoom
+            }
         })
 
         canvas.add(rect);
@@ -404,6 +482,14 @@ function App(){
 
         // ElemListにほうりこむ
         elem_list.push(text);
+    }
+
+    /**
+    * タバー位置調整関数
+    */
+    this.update_now_tabber = function(text){
+        // 位置を探して保存
+        now_tabber = tabber.findIndex( elem => elem === text )
     }
 
     /**
@@ -444,16 +530,25 @@ function App(){
         });
     }
 
+    /* UUIDゲッタ */
+    this.get_uuid = function(){
+        return $("#uuid").val(); // UUID抜く
+    }
+
     /* Ajax関数 */
-    var URL_FOR_FORM = "/pdf_form/form/save/";
-    var URL_FOR_PDF = "/pdf_form/output/";
-    var URL_FOR_COMMIT = "/pdf_form/commit/"
+    var URL_FOR_FORM = "/save/";
+    var URL_FOR_PDF = "/output/";
+    var URL_FOR_COMMIT = "/commit/"
+
+    // コミットURL注入関数
+    this.set_form_save_url = function(url){ URL_FOR_FORM = url; }
+    this.set_commit_url = function(url){ URL_FOR_COMMIT = url; }
+
+    /* 送信関数 */
     this.init_ajaxEvents = function(){
-        var uuid = $("#uuid").val(); // UUID抜く
         // フォーム生成ボタン
         $("#gen_form").click(function(){
-            // 名前抜く
-            var form_name = $("#form-name").val();
+            var form_name = $("#form-name").val(); // 名前抜く
             // ふぉーむつくる
             var $form = $('<form/>', {'action': URL_FOR_FORM, 'method': 'post'});
             $form.append($('<input/>', {'type': 'hidden', 'name': "data", 'value': self.gen_dataJSON()}));
@@ -473,15 +568,21 @@ function App(){
         });
         // 入力終了ボタン
         $("#commit").click(function(){
-            // 名前抜く
-            var form_name = $("#form-name").val();
+            var form_name = $("#form-name").val(); // 名前抜く
             // ふぉーむつくる
             var $form = $('<form/>', {'action': URL_FOR_COMMIT, 'method': 'post'});
             $form.append($('<input/>', {'type': 'hidden', 'name': "data", 'value': self.gen_dataJSON()}));
             $form.append($('<input/>', {'type': 'hidden', 'name': "uuid", 'value': uuid}));
             $form.append($('<input/>', {'type': 'hidden', 'name': "form_name", 'value': form_name}));
             $form.appendTo(document.body);
-            $form.submit(); // サブミット
+
+            // 送信
+            if (commit_mode == "form"){
+                $form.submit(); // サブミット
+            } else if(commit_mode == "ajax"){
+                $.post(URL_FOR_COMMIT, $form.serialize()); // Ajaxで送信
+                noty({text: 'データを送信しました', layout: 'topCenter', type: 'information', timeout:2000 });
+            }
         })
     }
 
@@ -489,13 +590,10 @@ function App(){
     * デフォルト値入力補完する
     */
     var now = new Date();
-    this.complete_default = function(){
-        // 全デフォルトが無ならとりま無視
-        if (elem_list.every( elem => { return !elem.defaultValue; } )){
-            return ;
-        }
+    this.complete_default = function(openmode){
         // 全エレメントを捜査する
         elem_list.forEach( elem => {
+            if ( openmode && elem.text ){ return; } // ファイル展開モード:既にあれば戻る
             // デフォルト値設定
             switch(elem.defaultValue){
                 case "%full_year%": // フル西暦
@@ -572,6 +670,8 @@ function App(){
             }
         });
 
+        // _textに束縛しとく
+        text.do_centering = do_centering;
         // とりまかける
         do_centering();
     }

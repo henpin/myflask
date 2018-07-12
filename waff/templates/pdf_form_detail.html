@@ -27,9 +27,9 @@
                             {% for metaName in metaName_list %}
                                 <td>{{ data["data"][metaName]["text"] or "-" }}</td>
                             {% endfor %}
-                            <td><a class="btn btn-sm btn-info" href="{{ url_for("open_form",_uuid=data["uuid"]) }}">開く</a></td>
-                            <td><a class="btn btn-sm btn-success" target="_blank" href="{{ url_for("output_pdf_fromUUID",_uuid=data["uuid"]) }}">出力</a></td>
-                            <td><a class="btn btn-sm btn-danger" href="{{ url_for("delete_formData",_uuid=data["uuid"]) }}">削除</a></td>
+                            <td><a class="btn btn-sm btn-info" href="{{ url_for("open_commitdata",_uuid=data["uuid"]) }}">開く</a></td>
+                            <td><a class="btn btn-sm btn-success" target="_blank" href="{{ url_for("output_data",_uuid=data["uuid"]) }}">出力</a></td>
+                            <td><a class="btn btn-sm btn-danger" href="{{ url_for("delete_commitdata",_uuid=data["uuid"]) }}">削除</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

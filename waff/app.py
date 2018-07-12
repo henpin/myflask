@@ -3,6 +3,7 @@
 from flask import Flask, Blueprint, abort
 from flask import render_template, request, Response, jsonify, send_file, make_response, redirect, url_for, flash
 from flask_tinydb import PDFFormDB, PDFFormCommitDataDB
+from flask.views import MethodView
 
 import json
 import uuid
@@ -129,7 +130,7 @@ def pdf_form_detail(_uuid):
     #metaName_list = metaName_list_filtered if metaName_list_filtered else metaName_list
 
     # iframeフレーズつくる
-    iframe_url = URL_HEADER +url_for("load_input_form",_uuid=_uuid) # 埋め込みフォームURL
+    iframe_url = URL_HEADER +url_for("iframe_form",_uuid=_uuid) # 埋め込みフォームURL
     iframe_tag = '<iframe src="%s" width="100%%" height=1800 scrolling="no" frameborder="0"></iframe>' % (iframe_url,)
 
     # 公開NS
@@ -146,44 +147,44 @@ def pdf_form_detail(_uuid):
 
 
 # Output ----------------------------------------------------
-@app.route("/pdf_form/output/", methods=["POST"])
-def output_pdf():
-    """ PDFにして返す """
-    # データ抜く
-    json_data = request.form["data"] # JSON
-    _uuid = request.form["uuid"] # uuid抜く
+class PDFFormOutputAPIView(MethodView):
+    """ PDF出力APIビュー """
+    def get(self,_uuid):
+        """ 出力API """
+        # UUIDから入力データ参照
+        commit_data = pdf_commitDB.search_data(_uuid) or abort(404)
+        if commit_data :
+            # フォームデータも参照
+            form_data = pdf_commitDB.get_foreignKey(commit_data)
+            
+            # データJSON参照
+            json_data = commit_data["json"]
+            # テンプレPDF名参照 : フォームデータのUUIDより
+            pdf_fileName = gen_pdf_fileName(form_data["uuid"])
 
-    # テンプレPDF名参照
-    pdf_fileName = gen_pdf_fileName(_uuid)
+            # PDF化する
+            out_fileName = generate_pdf(json_data,pdf_fileName)
 
-    # PDF出力
-    out_fileName = generate_pdf(json_data,pdf_fileName)
+            # PDF返す
+            return send_file(out_fileName, mimetype='application/pdf')
 
-    # PDF返す
-    return send_file(out_fileName, mimetype='application/pdf')
+        else :
+            return "<p>NotFOund</p>"
 
-@app.route("/pdf_form/output_data/<string:_uuid>", methods=["GET"])
-def output_pdf_fromUUID(_uuid):
-    """ UUIDから入力データ抜いてそこから出力 """
-    # UUIDから入力データ参照
-    commit_data = pdf_commitDB.search_data(_uuid) or abort(404)
-    if commit_data :
-        # フォームデータも参照
-        form_data = pdf_commitDB.get_foreignKey(commit_data)
-        
-        # データJSON参照
-        json_data = commit_data["json"]
-        # テンプレPDF名参照 : フォームデータのUUIDより
-        pdf_fileName = gen_pdf_fileName(form_data["uuid"])
+    def post(self):
+        """ 注入バージョン """
+        # データ抜く
+        json_data = request.form["data"] # JSON
+        _uuid = request.form["uuid"] # uuid抜く
 
-        # PDF化する
+        # テンプレPDF名参照
+        pdf_fileName = gen_pdf_fileName(_uuid)
+
+        # PDF出力
         out_fileName = generate_pdf(json_data,pdf_fileName)
 
         # PDF返す
         return send_file(out_fileName, mimetype='application/pdf')
-
-    else :
-        return "<p>NotFOund</p>"
 
 def generate_pdf(json_data,template_fileName):
     """ 出力データJSONとテンプレファイル名からPDF生成 """
@@ -225,143 +226,205 @@ def generate_pdf(json_data,template_fileName):
 
 
 # PDFForm --------------------------------------
-@app.route("/pdf_form/form/save/", methods=["POST"])
-def save_form():
-    """ フォーム保存 """
-    # データ抜く
-    json_data = request.form["data"] # json抜く
-    _uuid = request.form["uuid"] # uuid抜く
-    form_name = request.form["form_name"] # フォーム名抜く
+class PDFFormView(MethodView):
+    """ PDFフォーム生成・よみこみヴー"""
+    def get(self,_uuid):
+        """ フォーム読み込む """
+        result = pdfDB.search_data(_uuid) or abort(404) # リザルト抜く
+        if result :
+            # 値抜く
+            json_data = result["json"]
+            form_name = result["form_name"]
 
-    # 保存
-    png_file = "/static/media/" +gen_png_fileName(_uuid,root=False) # 参照可能PNGファイルパス
-    pdfDB.insert_data(
-        _uuid = _uuid,
-        _json = json_data,
-        png_file = png_file,
-        form_name = form_name
-        )
+            # コンテキスト構築
+            ns = {
+                "title" : u"電子フォーム入力",
+                "subtitle" : u"form_input",
+                "form_name" : form_name,
+                "uuid" : _uuid, # 基本UUID
+                "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+                "seal_path" : "/static/img/tanaka.png", # はんこパス
+            }
+            
+            # フォーム作成画面レンダリング
+            return render_template("pdf_form.html", json_data=json_data, **ns)
 
-    # ホーム画面に飛ぶ
-    flash(u"フォームを保存しました")
-    return redirect(url_for('home'))
+        else :
+            return "<p>Not Found</p>"
 
-@app.route("/pdf_form/form/<string:_uuid>", methods=["GET"])
-def load_form(_uuid):
-    """ フォーム読み込む """
-    result = pdfDB.search_data(_uuid) or abort(404) # リザルト抜く
-    if result :
+    def post(self):
+        """ フォーム保存 """
+        # データ抜く
+        json_data = request.form["data"] # json抜く
+        _uuid = request.form["uuid"] # uuid抜く
+        form_name = request.form["form_name"] # フォーム名抜く
+
+        # 保存
+        png_file = "/static/media/" +gen_png_fileName(_uuid,root=False) # 参照可能PNGファイルパス
+        pdfDB.insert_data(
+            _uuid = _uuid,
+            _json = json_data,
+            png_file = png_file,
+            form_name = form_name
+            )
+
+        # ホーム画面に飛ぶ
+        flash(u"フォームを保存しました")
+        return redirect(url_for('home'))
+
+class PDFFormDeleteView(MethodView):
+    """ 削除の為のヴー """
+    def get(self,_uuid):
+        """ フォーム削除 """
+        # 消す
+        pdfDB.delete(_uuid)
+
+        # ホームに飛ばす
+        flash(u"フォームを削除しました")
+        return redirect(url_for('home'))
+
+
+# IframeForm -----------------------------------------
+class IframePDFFormView(MethodView):
+    """ Iframe用ビュー """
+    def get(self,_uuid):
+        """ フォーム読み込む """
+        result = pdfDB.search_data(_uuid) or abort(404) # リザルト抜く
+        if result :
+            # 値抜く
+            json_data = result["json"]
+     
+            # コンテキスト構築
+            ns = {
+                "uuid" : _uuid, # 基本UUID
+                "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+            }
+            
+            # フォーム作成画面レンダリング
+            return render_template("pdf_input_form.html", json_data=json_data, **ns)
+
+        else :
+            return "<p>Not Found</p>"
+
+class IframeCommitDataView(MethodView):
+    """ IFrame版コミットデータビュー """
+    def get(self,_uuid):
+        """ フォーム読み込む """
+        # 送信モード拡張設定
+        commit_mode = request.args.get("commit_mode") or "ajax"
+        if commit_mode not in ("interactive","ajax"): abort(404)
+
+        # 保存済みフォームを抜く
+        result = pdf_commitDB.search_data(_uuid) or abort(404) # 抜く
+        commit_uuid = _uuid # 複写
+        if result :
+            # フォームデータも抜く
+            form_data = pdf_commitDB.get_foreignKey(result)
+            form_name = form_data["form_name"]
+            _uuid = form_data["uuid"] # フォームのUUIDに上書き
+
+            # 値抜く
+            json_data = result["json"]
+
+            # コンテキスト構築
+            ns = {
+                "title" : u"電子フォーム再入力",
+                "subtitle" : u"form_input",
+                "form_name" : form_name,
+                "uuid" : _uuid, # 基本UUID
+                "commit_uuid" : commit_uuid, # コミットデータUUID
+                "open_mode" : True, # オープンモード
+                "commit_mode" : commit_mode, # コミットモード
+                "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+            }
+            
+            # フォーム作成画面レンダリング
+            return render_template("pdf_input_form.html", json_data=json_data, **ns)
+
+        else :
+            return "<p>Not Found</p>"
+
+# Commit data ----------------------------------------
+class PDFFormCommitDataView(MethodView):
+    """ こっみとデータヴー """
+    def get(self,_uuid):
+        """ コミットデータを開く"""
+        # 保存済みフォームを抜く
+        result = pdf_commitDB.search_data(_uuid) or abort(404) # 抜く
+        commit_uuid = _uuid # 複写
+        if result :
+            # フォームデータも抜く
+            form_data = pdf_commitDB.get_foreignKey(result)
+            form_name = form_data["form_name"]
+            _uuid = form_data["uuid"] # フォームのUUIDに上書き
+
+            # 値抜く
+            json_data = result["json"]
+
+            # コンテキスト構築
+            ns = {
+                "title" : u"電子フォーム再入力",
+                "subtitle" : u"form_input",
+                "form_name" : form_name,
+                "uuid" : _uuid, # 基本UUID
+                "commit_uuid" : commit_uuid, # コミットデータUUID
+                "open_mode" : True, # オープンモード
+                "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+            }
+            
+            # フォーム作成画面レンダリング
+            return render_template("pdf_form.html", json_data=json_data, **ns)
+
+        else :
+            return "<p>Not Found</p>"
+
+    def post(self):
+        """ 新規コミット """
         # 値抜く
-        json_data = result["json"]
-        form_name = result["form_name"]
+        json_data = request.form["data"] # json抜く
+        # とりまdetail
+        flash(u"フォームを送信しました")
+        return redirect(url_for('pdf_form_detail',_uuid=_uuid))
 
-        # コンテキスト構築
-        ns = {
-            "title" : u"電子フォーム入力",
-            "subtitle" : u"form_input",
-            "form_name" : form_name,
-            "uuid" : _uuid, # 基本UUID
-            "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
-            "seal_path" : "/static/img/tanaka.png", # はんこパス
-        }
-        
-        # フォーム作成画面レンダリング
-        return render_template("pdf_form.html", json_data=json_data, **ns)
-
-    else :
-        return "<p>Not Found</p>"
-
-@app.route("/pdf_form/form/delete/<string:_uuid>", methods=["GET"])
-def delete_form(_uuid):
-    """ フォーム削除 """
-    # 消す
-    pdfDB.delete(_uuid)
-
-    # ホームに飛ばす
-    flash(u"フォームを削除しました")
-    return redirect(url_for('home'))
-
-
-# InputForm -----------------------------------------
-@app.route("/pdf_form/input_form/<string:_uuid>", methods=["GET"])
-def load_input_form(_uuid):
-    """ フォーム読み込む """
-    result = pdfDB.search_data(_uuid) or abort(404) # リザルト抜く
-    if result :
+    def post(self,_uuid=None):
+        """ データコミット"""
         # 値抜く
-        json_data = result["json"]
- 
-        # コンテキスト構築
-        ns = {
-            "uuid" : _uuid, # 基本UUID
-            "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
-        }
-        
-        # フォーム作成画面レンダリング
-        return render_template("pdf_input_form.html", json_data=json_data, **ns)
+        json_data = request.form["data"] # json抜く
 
-    else :
-        return "<p>Not Found</p>"
+        if _uuid : # 上書き処理
+            # UUIDでコミットデータ索引してJSONデータをUpdate
+            pdf_commitDB.update({"json":json_data} ,_uuid)
+            form_data = pdf_commitDB.get_foreignKey(_uuid=_uuid)
+            _uuid = form_data["uuid"] # フォームデータのUUIDにしとく
 
-@app.route("/pdf_form/form/open/<string:_uuid>", methods=["GET"])
-def open_form(_uuid):
-    """ 保存したインプットフォームを開く """
-    # 保存済みフォームを抜く
-    result = pdf_commitDB.search_data(_uuid) or abort(404) # 抜く
-    if result :
-        # フォームデータも抜く
-        form_data = pdf_commitDB.get_foreignKey(result)
-        _uuid = form_data["uuid"] # フォームのUUIDに上書き
-        form_name = form_data["form_name"]
+        else : # 新規コミット
+            # 新規コミット用データ
+            _uuid = request.form["uuid"] # uuid抜く
+            form_name = request.form["form_name"] # フォーム名抜く
 
-        # 値抜く
-        json_data = result["json"]
+            # データベースに保存
+            pdf_commitDB.insert_data(
+                _json = json_data,
+                form_name = form_name,
+                form_uuid = _uuid,
+            )
 
-        # コンテキスト構築
-        ns = {
-            "title" : u"電子フォーム再入力",
-            "subtitle" : u"form_input",
-            "form_name" : form_name,
-            "uuid" : _uuid, # 基本UUID
-            "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
-        }
-        
-        # フォーム作成画面レンダリング
-        return render_template("pdf_form.html", json_data=json_data, **ns)
+        # とりまdetail
+        flash(u"フォームを送信しました")
+        return redirect(url_for('pdf_form_detail',_uuid=_uuid))
 
-    else :
-        return "<p>Not Found</p>"
+class PDFFormCommitDataDeleteView(MethodView):
+    """ 削除の為ダケノヴー """
+    def get(self,_uuid):
+        """ コミットデータの削除 """
+        # フォーム抜いておく
+        form_data = pdf_commitDB.get_foreignKey(_uuid=_uuid) or abort(404)
+        # 消す
+        pdf_commitDB.delete(_uuid)
 
-@app.route("/pdf_form/commit/", methods=["POST"])
-def commit_data():
-    """ フォーム入力内容保存 """
-    # 値抜く
-    json_data = request.form["data"] # json抜く
-    _uuid = request.form["uuid"] # uuid抜く
-    form_name = request.form["form_name"] # フォーム名抜く
-
-    # データベースに保存
-    pdf_commitDB.insert_data(
-        _json = json_data,
-        form_name = form_name,
-        form_uuid = _uuid,
-    )
-    
-    # とりまdetail
-    flash(u"フォームを送信しました")
-    return redirect(url_for('pdf_form_detail',_uuid=_uuid))
-
-@app.route("/pdf_form/form_data/delete/<string:_uuid>", methods=["GET"])
-def delete_formData(_uuid):
-    """ 消す """
-    # フォーム抜いておく
-    form_data = pdf_commitDB.get_foreignKey(_uuid=_uuid) or abort(404)
-    # 消す
-    pdf_commitDB.delete(_uuid)
-
-    # とりdetail
-    flash(u"入力データを削除しました")
-    return redirect(url_for('pdf_form_detail',_uuid=form_data["uuid"]))
+        # とりdetail
+        flash(u"入力データを削除しました")
+        return redirect(url_for('pdf_form_detail',_uuid=form_data["uuid"]))
 
 
 # API ---------------------------------------------------------
@@ -400,27 +463,51 @@ def pdf_form_names():
     # データ検索して名前抽出
     return json.dumps([ form_data["form_name"] for form_data in pdfDB.all() ])
 
+class CommitDataAPIView(MethodView):
+    """ コミットデータＡＰＩ"""
+    def post(self,_uuid):
+        """ JSON送って注入 """
+        # 値抜く
+        json_data = json.loads(request.form["data"]) # json抜く
+
+        # フォームデータ抜く
+        commit_data = pdf_commitDB.search_data(_uuid) or abort(404)
+        commit_json_data = json.loads(commit_data["json"])
+
+        # JSONデータの置き換え
+        for name,value in json_data.items():
+            commit_json_data[name]["text"] = value # アップデートする
+
+        # アップデート
+        pdf_commitDB.update({ "json" : json.dumps(commit_json_data) },_uuid)
+
+        # PDF出力
+        #pdf_fileName = gen_pdf_fileName(_uuid) # テンプレPDF名参照
+        #out_fileName = generate_pdf(form_json_data,pdf_fileName)
+
+        # PDF返す
+        #return send_file(out_fileName, mimetype='application/pdf')
+        return "OK"
+
 
 # Model API ----------------------------------------
-@app.route("/pdf_form/get_json/<string:_uuid>", methods=["GET"])
-def pdf_form_getJson(_uuid):
-    """ UUIDからフォーム検索 """
-    # データ検索
-    form_data = pdfDB.search_data(_uuid) or abort(404) 
+class PDFFormModelAPIView(MethodView):
+    """ Json取得API """    
+    def get(self,_uuid):
+        """ UUIDからフォームデータ検索 """
+        # データ検索
+        form_data = pdfDB.search_data(_uuid) or abort(404) 
+        return json.dumps(form_data)
 
-    return json.dumps(form_data)
+    def post(self):
+        """ 複数検索 """
+        # UUIDリストを抜く
+        uuid_list = json.loads(request.form["uuid_list"])
 
-@app.route("/pdf_form/get_json/", methods=["POST"])
-def pdf_form_getJson2():
-    """ POST ver """
-    # UUIDリストを抜く
-    uuid_list = json.loads(request.form["uuid_list"])
+        # くるくるして返す
+        result = [ pdfDB.search_data(_uuid) for _uuid in uuid_list ]
 
-    # くるくるして返す
-    result = [ pdfDB.search_data(_uuid) for _uuid in uuid_list ]
-
-    return json.dumps(result)
-
+        return json.dumps(result)
 
 @app.route("/pdf_form/get_json/from_name/<string:name>", methods=["GET"])
 def pdf_form_getJson_fromName(name):
@@ -432,14 +519,28 @@ def pdf_form_getJson_fromName(name):
     return json.dumps(form_data)
 
 
-# API -------------------------------------------
+# ルーティング
+# PDF Form 出力API
+app.add_url_rule('/pdf_form/output/<string:_uuid>', view_func=PDFFormOutputAPIView.as_view("output_data"))
+app.add_url_rule('/pdf_form/output/inject/', view_func=PDFFormOutputAPIView.as_view("output_data_with_inject"))
+# PDF Form
+app.add_url_rule('/pdf_form/save/', view_func=PDFFormView.as_view("save_form"))
+app.add_url_rule('/pdf_form/load/<string:_uuid>', view_func=PDFFormView.as_view("load_form"))
+app.add_url_rule('/pdf_form/delete/<string:_uuid>', view_func=PDFFormDeleteView.as_view("delete_form"))
+# Iframe Form
+app.add_url_rule('/pdf_form/iframe_form/<string:_uuid>', view_func=IframePDFFormView.as_view("iframe_form"))
+app.add_url_rule('/pdf_form/iframe_form/open/<string:_uuid>', view_func=IframeCommitDataView.as_view("iframe_form_open"))
+# Commit Data
+commit_view = PDFFormCommitDataView.as_view('commit')
+app.add_url_rule('/pdf_form/commit/', view_func=commit_view)
+app.add_url_rule('/pdf_form/commit/<string:_uuid>', view_func=commit_view)
+app.add_url_rule('/pdf_form/open/<string:_uuid>', view_func=PDFFormCommitDataView.as_view("open_commitdata"))
+app.add_url_rule('/pdf_form/delete_data/<string:_uuid>', view_func=PDFFormCommitDataDeleteView.as_view("delete_commitdata"))
+# API
+app.add_url_rule('/pdf_form/api/model/<string:_uuid>', view_func=PDFFormModelAPIView.as_view("pdfform_model_api_get"))
+app.add_url_rule('/pdf_form/api/model/', view_func=PDFFormModelAPIView.as_view("pdfform_model_api_post"))
+app.add_url_rule('/pdf_form/commit/inject/<string:_uuid>', view_func=CommitDataAPIView.as_view("commit_inject"))
 
-
-# Etc --------------------------------------------
-@app.route("/demo/")
-def demo():
-    """ ワードファイルアップロード基底ペー ジ"""
-    return render_template("demo.html")
 
 
 if __name__ == "__main__":

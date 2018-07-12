@@ -95,8 +95,12 @@
                 json_data = $('<div/>').html(json_data).text();
                 console.log(json_data);
                 app.load_dataJson(json_data); 
-                app.complete_default(); // 入力補完
+                app.complete_default({{ 'true' if open_mode else 'false' }}); // 入力補完
             }
+            // URL注入
+            app.set_form_save_url("{{ url_for('save_form') }}");
+            app.set_commit_url("{{ url_for('commit', _uuid=commit_uuid) }}");
+            // 送信設定
         });
     </script>
     <style type="text/css">
