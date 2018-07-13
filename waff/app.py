@@ -15,6 +15,8 @@ from module_contextpath import get_contextRootPath, get_contextPath
 import pdf_utils
 from plane_node import Node
 from dpy3_force import ForceNodeCollection
+from time import sleep
+from tinydb_utils import Locker
 
 #app = Blueprint("waff",__name__,url_prefix="/waff",template_folder=get_contextRootPath(__file__,"templates"))
 app = Flask(__name__)
@@ -26,6 +28,7 @@ pdfDB = PDFFormDB()
 pdf_commitDB = PDFFormCommitDataDB()
 
 URL_HEADER = "http://127.0.0.1:8000"
+COMMIT_LOCK = Locker() # 適当コミットロッカー
 
 # general
 def is_allowedFile(filename):
@@ -153,23 +156,20 @@ class PDFFormOutputAPIView(MethodView):
         """ 出力API """
         # UUIDから入力データ参照
         commit_data = pdf_commitDB.search_data(_uuid) or abort(404)
-        if commit_data :
-            # フォームデータも参照
-            form_data = pdf_commitDB.get_foreignKey(commit_data)
-            
-            # データJSON参照
-            json_data = commit_data["json"]
-            # テンプレPDF名参照 : フォームデータのUUIDより
-            pdf_fileName = gen_pdf_fileName(form_data["uuid"])
 
-            # PDF化する
-            out_fileName = generate_pdf(json_data,pdf_fileName)
+        # フォームデータも参照
+        form_data = pdf_commitDB.get_foreignKey(commit_data)
+        
+        # データJSON参照
+        json_data = commit_data["json"]
+        # テンプレPDF名参照 : フォームデータのUUIDより
+        pdf_fileName = gen_pdf_fileName(form_data["uuid"])
 
-            # PDF返す
-            return send_file(out_fileName, mimetype='application/pdf')
+        # PDF化する
+        out_fileName = generate_pdf(json_data,pdf_fileName)
 
-        else :
-            return "<p>NotFOund</p>"
+        # PDF返す
+        return send_file(out_fileName, mimetype='application/pdf')
 
     def post(self):
         """ 注入バージョン """
@@ -203,8 +203,9 @@ def generate_pdf(json_data,template_fileName):
         pdf.set_outfile(out_fileName) # 出力先読む
         for val in data_list.values() : # 全フォームテキストデータでくるくる
             # データ抽出
-            x,y = pdf.pos2lefttop(
-                val["x"]/1.6, val["y"]/1.6 +val["height"]/1.6 # 半分
+            # posとW/Hから中点を抜く
+            center_pos = pdf.pos2lefttop(
+                val["x"]/1.6 +(val["width"]/1.6)/2, val["y"]/1.6 +(val["height"]/1.6)/2
             )
             text = val["text"]
 
@@ -216,11 +217,11 @@ def generate_pdf(json_data,template_fileName):
                 # 判子画像
                 img_path = os.path.join(BASE_DIR,text[1:]) # 参照
                 # 張る
-                pdf.paste_image(img_path, (x,y),(height,width))
+                pdf.paste_image(img_path, (center_pos[0]-width/2,center_pos[1]-height/2),(width,height)) # 画像分のサイズを差し引く
 
             else :
-                # 書き込み
-                pdf.draw_string(x,y,text)
+                # 中点ベースで書き込み
+                pdf.draw_centered_string(center_pos[0],center_pos[1]-3,text)
 
     return out_fileName
 
@@ -298,6 +299,7 @@ class IframePDFFormView(MethodView):
             ns = {
                 "uuid" : _uuid, # 基本UUID
                 "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+                "seal_path" : "/static/img/tanaka.png", # はんこパス
             }
             
             # フォーム作成画面レンダリング
@@ -336,6 +338,7 @@ class IframeCommitDataView(MethodView):
                 "open_mode" : True, # オープンモード
                 "commit_mode" : commit_mode, # コミットモード
                 "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+                "seal_path" : "/static/img/tanaka.png", # はんこパス
             }
             
             # フォーム作成画面レンダリング
@@ -370,6 +373,7 @@ class PDFFormCommitDataView(MethodView):
                 "commit_uuid" : commit_uuid, # コミットデータUUID
                 "open_mode" : True, # オープンモード
                 "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+                "seal_path" : "/static/img/tanaka.png", # はんこパス
             }
             
             # フォーム作成画面レンダリング
@@ -467,6 +471,7 @@ class CommitDataAPIView(MethodView):
     """ コミットデータＡＰＩ"""
     def post(self,_uuid):
         """ JSON送って注入 """
+        global LOCK
         # 値抜く
         json_data = json.loads(request.form["data"]) # json抜く
 
@@ -479,7 +484,8 @@ class CommitDataAPIView(MethodView):
             commit_json_data[name]["text"] = value # アップデートする
 
         # アップデート
-        pdf_commitDB.update({ "json" : json.dumps(commit_json_data) },_uuid)
+        with COMMIT_LOCK:
+            pdf_commitDB.update({ "json" : json.dumps(commit_json_data) },_uuid)
 
         # PDF出力
         #pdf_fileName = gen_pdf_fileName(_uuid) # テンプレPDF名参照
@@ -519,7 +525,9 @@ def pdf_form_getJson_fromName(name):
     return json.dumps(form_data)
 
 
-# ルーティング
+
+
+# ルーティング ---------------------------------------
 # PDF Form 出力API
 app.add_url_rule('/pdf_form/output/<string:_uuid>', view_func=PDFFormOutputAPIView.as_view("output_data"))
 app.add_url_rule('/pdf_form/output/inject/', view_func=PDFFormOutputAPIView.as_view("output_data_with_inject"))
@@ -544,5 +552,5 @@ app.add_url_rule('/pdf_form/commit/inject/<string:_uuid>', view_func=CommitDataA
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0',port=8000)
+    app.run(debug=False, host='0.0.0.0',port=8000)
 

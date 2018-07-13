@@ -55,6 +55,8 @@ function App(){
         // Events
         var startX = 0;
         var startY = 0;
+
+        // ドラッグスタート
         canvas.on('mouse:down', function(opt) {
             // 要素上なら無視
             if (opt.target && opt.target._objects){
@@ -66,30 +68,29 @@ function App(){
             }
         });
 
+        // ドラッグエンド => 入力欄つくる
         canvas.on('mouse:up', function(opt){
             if ( mode != "creation"){ return; }
             var x = opt.pointer.x;
             var y = opt.pointer.y;
 
-            if (x-startX<20 && y-startY<20){ return }
+            if (x-startX<10 && y-startY<10){ return }
             if (!startX && !startY){ return }
 
-            // rect
+            // 基盤のrect作成
             var rect = new fabric.Rect({ 
                 width: x -startX, height: y -startY,
                 fill: '#3C8DBC', opacity: 0.2,
                 });
 
-            // text
-            input_num += 1;
-            var tmp_name = '入力'+input_num; // 一時テキスト
+            // 入力欄text作成
+            var tmp_name = '入力'+(input_num+1); // 一時テキスト
             var text = new fabric.IText(tmp_name, {
                 width: x -startX, height: y -startY,
                 fontSize:16, textAlign: "center"
             });
-            text.metaName = tmp_name; // 一時名
 
-            // group化して追加
+            // group化してcanvas追加
             var group = new fabric.Group([rect,text],{
                 left: startX, top: startY ,
                 cornerSize: 6, hasRotatingPoint : false,
@@ -99,45 +100,8 @@ function App(){
             // センタリング定義
             self.set_text_center(text,rect);
 
-            // 保存
-            elem_holder[input_num] = group
-
-            // フォームエリアに追加
-            $("#form-area").append(
-                '<div class="form-group col-sm-12 row">'
-                    +'<div class="col-sm-12"><label class="control-label">入力欄'+input_num+'</label></div>'
-                    +'<div class="col-sm-12">'
-                    +'<input type="text" class="input-name form-control form-input" placeholder="入力項目名" data-target="'+input_num+'">' // 項目名
-                    +'<select class="input-type form-control col-sm-4" data-target="'+ input_num+'">' // 入力タイプ
-                        +'<option value="input">入力欄</option> <option value="承認欄">承認欄</option> <option value="checkbox">チェックボックス</option>'
-                    +'</select>'
-                    +'<input type="text" class="default-value form-control form-input" placeholder="デフォルト値" data-target="'+input_num+'" autocomplete="on" list="dv">' // デフォルト値
-                    +'<datalist id="dv">'
-                    +'<option value="%full_year%">西暦</option> <option value="%lower_year%">西暦下二桁</option> <option value="%jp_year%">和暦</option>'
-                    +'<option value="%jp_era%">元号</option> <option value="%month%">月(入力月)</option> <option value="%date%">日(入力日)</option>'
-                    +'<option value="%day%">曜日(入力日)</option><option value="%name%">名前(入力者)</option>'
-                    +'</datalist>'
-                    +'</div>'
-                +'</div>'
-                );
-            // イベントつける
-            $(".input-name").change(function(){
-                // 値を変える 
-                elem_holder[$(this).attr("data-target")].item(1).set({ text : $(this).val() });
-                // メタ名も一緒につける
-                elem_holder[$(this).attr("data-target")].item(1).metaName = $(this).val();
-
-                canvas.renderAll(); // レンダリング
-            });
-            $(".default-value").change(function(){
-                // デフォルト値くっつける
-                elem_holder[$(this).attr("data-target")].item(1).defaultValue = $(this).val();
-            });
-            $(".input-type").change(function(){
-                // データ型くっつける
-                console.log($(this).val());
-                elem_holder[$(this).attr("data-target")].item(1).input_type = $(this).val();
-            });
+            // 入力欄として保存
+            self.regist_inputForm(group);
         });
 
         // タッチイベント
@@ -192,6 +156,67 @@ function App(){
           opt.e.stopPropagation();
         });
         */
+    }
+
+    /*
+    * 新規入力欄の追加
+    */
+    this.regist_inputForm = function(group){
+        // 入力番号インクリメント
+        input_num += 1;
+        var input_name = "入力" +input_num;
+
+        // テキスト設定
+        text = group._objects[1]; // テキストエレメント抽出
+        text.text = input_name;
+        text.metaName = input_name;
+
+        // 入力欄保管庫に保存
+        elem_holder[input_num] = group;
+
+        // フォームエリアに追加
+        $("#form-area").append(
+            '<div class="form-group col-sm-12 row">'
+                +'<div class="col-sm-12"><label class="control-label">入力欄'+input_num+'</label></div>'
+                +'<div class="col-sm-12">'
+                +'<input type="text" class="input-name form-control form-input" placeholder="入力項目名" data-target="'+input_num+'">' // 項目名
+                +'<select class="input-type form-control col-sm-4" data-target="'+ input_num+'">' // 入力タイプ
+                    +'<option value="input">入力欄</option> <option value="承認欄">承認欄</option> <option value="checkbox">チェックボックス</option> <option value="select">選択○</option>'
+                +'</select>'
+                +'<input type="text" class="default-value form-control form-input" placeholder="デフォルト値" data-target="'+input_num+'" autocomplete="on" list="dv">' // デフォルト値
+                +'<datalist id="dv">'
+                +'<option value="%full_year%">西暦</option> <option value="%lower_year%">西暦下二桁</option> <option value="%jp_year%">和暦</option>'
+                +'<option value="%jp_era%">元号</option> <option value="%month%">月(入力月)</option> <option value="%date%">日(入力日)</option>'
+                +'<option value="%day%">曜日(入力日)</option><option value="%name%">名前(入力者)</option>'
+                +'</datalist>'
+                +'</div>'
+            +'</div>'
+            );
+        // イベントつける
+        $(".input-name").change(function(){
+            // 値を変える 
+            elem_holder[$(this).attr("data-target")].item(1).set({ text : $(this).val() });
+            // メタ名も一緒につける
+            elem_holder[$(this).attr("data-target")].item(1).metaName = $(this).val();
+
+            canvas.renderAll(); // レンダリング
+        });
+        $(".default-value").change(function(){
+            // デフォルト値くっつける
+            elem_holder[$(this).attr("data-target")].item(1).defaultValue = $(this).val();
+        });
+        $(".input-type").change(function(){
+            // データ型くっつける
+            elem_holder[$(this).attr("data-target")].item(1).input_type = $(this).val();
+        });
+
+        // 逆連関
+        if (text.input_type){ // input_typeの逆反映
+            $(".input-type[data-target='"+input_num+"'").val(text.input_type);
+        }
+        if (text.defaultValue){ // defaultValueの逆反映
+            $(".default-value[data-target='"+input_num+"'").val(text.defaultValue);
+        }
     }
 
     /* フォームデータJSONを生成 */
@@ -293,6 +318,11 @@ function App(){
                 // ペースタブルにする
                 self.set_pastable(rect,"seal-id")
 
+                // テキストがあれば判子あるので張る
+                if (data.text){
+                    rect.do_paste(); // ペタ
+                }
+
             } else { // 入力欄
                 // textつくる
                 var text = new fabric.IText(data.text, {
@@ -329,19 +359,28 @@ function App(){
             selectable: false,
         });
 
+        // ペーストする関数
         var flag = false; // 存在フラグ
+        var do_paste = function(){
+            if (flag){ // あれば消す
+                canvas.remove(imgInst);
+                _rect.text = ""; // テキストを消す
+                flag = false; // フラグ下げる
+            } else { // なければ画像ぺタ
+                canvas.add(imgInst);
+                _rect.text = $(imgElem).attr("src"); // ソース入れとく
+                flag = true; // フラグ上げる
+            }
+        }
+        _rect.do_paste = do_paste; // 束縛しとく
+
         // クリックされたらぺタ
         canvas.on("mouse:down",function(opt){
             if ( opt.target == _rect || opt.target == imgInst){
-                if (flag){
-                    canvas.remove(imgInst); // 消す
-                    _rect.text = ""; // テキストを消す
-                    flag = false; // フラグ下げる
-                } else {
-                    canvas.add(imgInst); // 画像つける
-                    _rect.text = $(imgElem).attr("src"); // ソース入れとく
-                    flag = true; // フラグ上げる
-                }
+                // ペースト
+                do_paste();
+                // インタラクティブモードなら送信
+                self.interactive_commit(_rect);
             }
         });
 
@@ -393,7 +432,6 @@ function App(){
             }
 
             // コピペ処理
-            /*
             if (e.ctrlKey){
                 if (e.keyCode == 67){
                     self.copy_elem(); // コピー
@@ -401,7 +439,6 @@ function App(){
                     self.paste_elem(); // ペースト
                 }
             }
-            */
         });
     }
 
@@ -419,20 +456,10 @@ function App(){
         var _rect = rect; // for closure
         var _text = text; // for closure
         // 入力タイプで分岐
-        if (input_type == "checkbox"){
-            // フォントサイズだけ調整
-            _text.set({ fontSize:25 });
-            // クリックでチェック化
-            canvas.on("mouse:down",function(opt){
-                if ( opt.target == _text || opt.target == _rect ){
-                    if (_text.text){ _text.text = ""; } // あればなくす
-                    else { _text.text = "✓"; } // チェックマークつける
-                    _text.do_centering(); // センタリング。センタリング設定関数で束縛される
-                    setTimeout(_ => {
-                        _text.exitEditing(); // エグジットイベントをディスパッチ
-                        },500);
-                }
-            });
+        if (input_type == "checkbox"){ // チェックマーク
+            self.set_checkableRect(_rect,_text,"✓"); // チェッカブルレクトにする
+        } else if (input_type == "select"){ // ○
+            self.set_checkableRect(_rect,_text,"○",40); // チェッカブルレクトにする
         } else {
             // ワンクリックで入力モード
             canvas.on("mouse:down",function(opt){
@@ -454,14 +481,8 @@ function App(){
                 canvas.renderAll();
                 active_text = null; // フォーカス抜く
 
-                /* インタラクティブ送信モード*/
-                if ( commit_mode == "interactive" ){
-                    // データ構築
-                    var data = {};
-                    data[_text.metaName] = _text.text;
-                    $.post(URL_FOR_COMMIT,{ "data": JSON.stringify(data) }); // Ajaxで送信
-                    noty({text: 'データを送信しました', layout: 'topCenter', type: 'information', timeout:2000 });
-                }
+                // インタラクティブモードなら送信
+                self.interactive_commit(_text);
             }
         });
         canvas.on("text:editing:entered", function(opt){
@@ -474,6 +495,7 @@ function App(){
             }
         })
 
+        // キャンバスに追加
         canvas.add(rect);
         canvas.add(text);
 
@@ -482,6 +504,45 @@ function App(){
 
         // ElemListにほうりこむ
         elem_list.push(text);
+    }
+
+    /*
+    * チェッカブルレクトにする
+    */
+    this.set_checkableRect = function(rect,text,check,font_size){
+        // クロージャ束縛
+        var _text = text;
+        var _rect = rect;
+        var _check = check;
+
+        // フォントサイズ調整
+        _text.set({ fontSize:font_size || 25 }); // デフォルト25
+
+        // クリックでチェック化
+        canvas.on("mouse:down",function(opt){
+            if ( opt.target == _text || opt.target == _rect ){
+                if (_text.text){ _text.text = ""; } // あればなくす
+                else { _text.text = _check; } // チェックマークつける
+                _text.do_centering(); // センタリング。センタリング設定関数で束縛される
+                setTimeout(_ => {
+                    _text.exitEditing(); // エグジットイベントをディスパッチ
+                    },500);
+            }
+        });
+    }
+
+    /**
+    * インタラクティブコミット
+    */
+    this.interactive_commit = function(elem){
+        /* インタラクティブ送信モード*/
+        if ( commit_mode == "interactive" ){
+            // データ構築
+            var data = {};
+            data[elem.metaName] = elem.text;
+            $.post(URL_FOR_COMMIT,{ "data": JSON.stringify(data) }); // Ajaxで送信
+            noty({text: 'データを送信しました', layout: 'topCenter', type: 'information', timeout:2000 });
+        }
     }
 
     /**
@@ -494,15 +555,24 @@ function App(){
 
     /**
     * コピー関数
+    * アクティブオブジェクトを保管
     */
     var _clipboard = null;
+    var copy_base = null; 
     this.copy_elem = function(){
-        canvas.getActiveObject().clone(function(cloned) {
+        // コピーベースオブジェクトの保存
+        copy_base = canvas.getActiveObject()
+        // クローンして保管
+        copy_base.clone(function(cloned) {
             _clipboard = cloned; // copy
             });
     }
 
-    /* ペースト関数 */
+    /*
+    * ペースト関数
+    * アクティブオブジェクトを複製
+    * 複製後、新規入力欄として登録処理
+    */
     this.paste_elem = function(){
         // クローンする
         _clipboard.clone(function(clonedObj) {
@@ -527,7 +597,14 @@ function App(){
             _clipboard.left += 10;
             canvas.setActiveObject(clonedObj);
             canvas.requestRenderAll();
-        });
+
+            // コピーベースからinput_type/defaultValueの同期 => text間のやり取り
+            clonedObj._objects[1].input_type = copy_base._objects[1].input_type;
+            clonedObj._objects[1].defaultValue = copy_base._objects[1].defaultValue;
+
+            // 入力欄として登録
+            self.regist_inputForm(clonedObj);
+        })
     }
 
     /* UUIDゲッタ */
