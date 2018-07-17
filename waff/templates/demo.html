@@ -1,19 +1,184 @@
-{% extends "base.html" %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>電子帳票デザイナ</title>
 
-{% block content %}
-<div class="main">
-    <section class="module">
+    <!-- titan -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/assets/images/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/assets/images/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/assets/images/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/images/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/assets/images/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/assets/images/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/assets/images/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/assets/images/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/assets/images/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/assets/images/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/assets/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/assets/images/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/assets/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/static/assets/images/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!--  Stylesheets ============================================= -->
+    <!-- Default stylesheets-->
+    <link href="/static/assets/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Template specific stylesheets-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Volkhov:400i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+    <link href="/static/assets/lib/animate.css/animate.css" rel="stylesheet">
+    <link href="/static/assets/lib/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/assets/lib/et-line-font/et-line-font.css" rel="stylesheet">
+    <link href="/static/assets/lib/flexslider/flexslider.css" rel="stylesheet">
+    <!--
+    <link href="/static/assets/lib/owl.carousel/dist/static/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/static/assets/lib/owl.carousel/dist/static/assets/owl.theme.default.min.css" rel="stylesheet">
+    -->
+    <link href="/static/assets/lib/magnific-popup/dist/magnific-popup.css" rel="stylesheet">
+    <link href="/static/assets/lib/simple-text-rotator/simpletextrotator.css" rel="stylesheet">
+    <!-- Main stylesheet and color file-->
+    <link href="/static/assets/css/style.css" rel="stylesheet">
+    <link id="color-scheme" href="/static/assets/css/colors/default.css" rel="stylesheet">
+
+    <!-- bootstrap jquery -->
+    <script src="/static/assets/lib/jquery/dist/jquery.js"></script>
+    <script src="/static/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- noty -->
+    <script type='text/javascript' src='/static/assets/noty/jquery.noty.js'></script>
+    <script type='text/javascript' src='/static/assets/noty/layouts/topCenter.js'></script>
+    <script type='text/javascript' src='/static/assets/noty/layouts/topLeft.js'></script>
+    <script type='text/javascript' src='/static/assets/noty/layouts/topRight.js'></script>            
+    <script type='text/javascript' src='/static/assets/noty/themes/default.js'></script>
+    <!-- Additional Header Block -->
+    
+    
+</head>
+<body class="">
+    <div class="page-loader" style="display: none;">
+        <div class="loader" style="display: none;">Loading...</div>
+    </div>
+    <nav class="navbar navbar-custom" role="navigation">
         <div class="container">
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <h2 class="module-title font-alt">埋め込みデモ</h2>
+          <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#custom-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">WAFF</a>
+          </div>
+          <div class="collapse navbar-collapse" id="custom-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/">HOME</a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <div><!-- Flash Block -->
+        
+            
+        
+    </div>
+    <div class=""><!-- main block -->
+        
+<div class="main">
+     <section class="module-small">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt"></h2>
+            <div class="module-subtitle font-serif">電子帳票デザイナ </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+             <!-- フォームデザイン時 -->
+            <div class="col-sm-8">
+                <canvas id="c"></canvas>
+                <img src="/static/media/c79c61b0-b7f1-42b7-975f-129077e9bd68_0.png" id="my-image" style="display:none;">
+                <img src="" id="seal-id" style="display:none;">
+            </div>
+            <div class="col-sm-4" style="background-color:#e8e8e8;height:100%">
+                <div class="col-sm-12">
+                    <h3> オプション</h3>
+                    <div class="form-group">
+                        <label class="control-label">フォーム名</label> 
+                        <input class="form-control" type="text" id="form-name"/>
+                    </div>
+                    <form id="form-area">
+                    </form>
+                    <div class="row col-sm-12" style="">
+                        <!--<button class="btn btn-success col-sm-12" id="load_format_fromDB">フォームデータの読み込み</button>-->
+                        <!--<button class="btn btn-success col-sm-12" id="save_format_2DB">フォームデータの保存</button>-->
+                        <button class="btn btn-success col-sm-12" id="gen_form">フォーム作成</button>
+                    </div>
                 </div>
             </div>
-            <iframe src="http://127.0.0.1:5000/pdf_form/input_form/8b5c1f04-6787-4bf1-bdf2-e38d10a80f26" width=1190 height=1800 scrolling="no" frameborder="yes"></iframe>
+            
+
+            
         </div>
     </section>
-</div>
-{% endblock %}
 
-{% block js %}
-{% endblock %}
+    <!--
+    <section>
+        <div class="box">
+            <div class="box-body">
+                <div class="row col-sm-12">
+                    <div class="col-sm-6 row">
+                        <input type="button" class="btn btn-primary col-sm-2" value="JSON化" id="json-btn">
+                        <textarea id="json-out" class="col-sm-10" rows=3></textarea>
+                    </div>
+                    <div class="row col-sm-6">
+                        <input type="button" class="btn btn-primary col-sm-2" value="JSONを読み込む" id="load-json">
+                        <textarea id="json-in" class="col-sm-10" rows=3></textarea>
+                    </div>
+                </div>
+                <div class="row col-sm-12">
+                    <div class="col-sm-6 row">
+                        <input type="button" class="btn btn-primary col-sm-2" value="JSON化ver2" id="json-btn2">
+                        <textarea id="json-out2" class="col-sm-10" rows=3></textarea>
+                    </div>
+                    <div class="col-sm-6 row">
+                        <input type="button" class="btn btn-primary col-sm-2" value="フォーム生成" id="load-json2">
+                        <textarea id="json-in2" class="col-sm-10" rows=3></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    -->
+    <input type="hidden" id="uuid" value="c79c61b0-b7f1-42b7-975f-129077e9bd68">
+    <div id="file_dl"></div>
+</div>
+
+    </div>
+    
+    
+    
+    <!-- additional js block -->
+    
+    <script src="/static/js/fabric.min.js"></script>
+    <script src="/static/js/pdf_form.js"></script>
+    <!-- 注入スクリプト -->
+    <script>
+        /* あれば読む */
+        var json_data = '';
+        $(function(){
+            if (json_data){ 
+                // デコードする
+                json_data = $('<div/>').html(json_data).text();
+                console.log(json_data);
+                app.load_dataJson(json_data); 
+                app.complete_default(false); // 入力補完
+            }
+            // URL注入
+            app.set_form_save_url("/pdf_form/save/");
+            app.set_commit_url("/pdf_form/commit/");
+            // 送信設定
+        });
+    </script>
+    <style type="text/css">
+        .canvas-container { margin : auto; }
+    </style>
+
+</body>
+</html>

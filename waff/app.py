@@ -234,7 +234,7 @@ class PDFFormView(MethodView):
         result = pdfDB.search_data(_uuid) or abort(404) # リザルト抜く
         if result :
             # 値抜く
-            json_data = result["json"]
+            json_data = result["json"].replace(u"\\",u"\\\\").replace(u"'",u"\\'")
             form_name = result["form_name"]
 
             # コンテキスト構築
@@ -293,7 +293,7 @@ class IframePDFFormView(MethodView):
         result = pdfDB.search_data(_uuid) or abort(404) # リザルト抜く
         if result :
             # 値抜く
-            json_data = result["json"]
+            json_data = result["json"].replace(u"\\",u"\\\\").replace(u"'",u"\\'")
      
             # コンテキスト構築
             ns = {
@@ -326,7 +326,7 @@ class IframeCommitDataView(MethodView):
             _uuid = form_data["uuid"] # フォームのUUIDに上書き
 
             # 値抜く
-            json_data = result["json"]
+            json_data = result["json"].replace(u"\\",u"\\\\").replace(u"'",u"\\'")
 
             # コンテキスト構築
             ns = {
@@ -362,7 +362,7 @@ class PDFFormCommitDataView(MethodView):
             _uuid = form_data["uuid"] # フォームのUUIDに上書き
 
             # 値抜く
-            json_data = result["json"]
+            json_data = result["json"].replace(u"\\",u"\\\\").replace(u"'",u"\\'")
 
             # コンテキスト構築
             ns = {
@@ -524,6 +524,11 @@ def pdf_form_getJson_fromName(name):
     # 返す
     return json.dumps(form_data)
 
+
+# Etc ------
+@app.route("/demo/")
+def demo():
+    return render_template("demo.html")
 
 
 

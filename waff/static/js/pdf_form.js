@@ -77,6 +77,17 @@ function App(){
             if (x-startX<10 && y-startY<10){ return }
             if (!startX && !startY){ return }
 
+            // 範囲中に何らかのオブジェクトが存在したら無視
+            for (let elem of Object.values(elem_holder)){
+                // 範囲内にあるか探索
+                if ( (startX <= elem.left && elem.left <= x) && (startY <= elem.top && elem.top <= y) ){
+                    return ;
+                } else if ( elem.left <= -1 || elem.top <= -1 ) {
+                    // 複数の場合は何故か座標値がひっくり返る
+                    return ;
+                }
+            }
+
             // 基盤のrect作成
             var rect = new fabric.Rect({ 
                 width: x -startX, height: y -startY,
@@ -577,12 +588,15 @@ function App(){
         // クローンする
         _clipboard.clone(function(clonedObj) {
             canvas.discardActiveObject();
-            clonedObj.set({
-                left: clonedObj.left + 10,
-                top: clonedObj.top + 10,
-                evented: true,
-            });
-            if (clonedObj.type === 'activeSelection') {
+
+            // クローン対象をキャンバスに張って入力欄としてエディタぶるレクトをコピーする
+            if (clonedObj.type === 'activeSelection') { // 複数選択範囲レクト
+                // 位置調整 : 表形式用に高さ分だけそのまま下げる
+                clonedObj.set({
+                    top: clonedObj.top + clonedObj.height,
+                    evented: true,
+                });
+                /* キャンバスレベルコピー */
                 // active selection needs a reference to the canvas.
                 clonedObj.canvas = canvas;
                 clonedObj.forEachObject(function(obj) {
@@ -590,21 +604,58 @@ function App(){
                 });
                 // this should solve the unselectability
                 clonedObj.setCoords();
-            } else {
+
+                /* エディタブルレクトレベルコピー */
+                // 選択されたレクトごとに属性をコピーして入力欄として保存
+                copy_base._objects.forEach( (editableRect,index) => {
+                    // クローン済み対象レクト抽出
+                    var clone_rect = clonedObj._objects[index];
+
+                    // 属性コピー
+                    self.copy_editableRectAttr(editableRect,clone_rect);
+                    
+                    // 入力欄として登録
+                    self.regist_inputForm(clone_rect);
+                });
+                console.log(clonedObj);
+
+                // 繰り返しコピペ用調整
+                _clipboard.top += clonedObj.height;
+
+            } else { // 通常のエディタぶるレクト
+                // 位置調整 : 少し斜め下のそれっぽい位置におく
+                clonedObj.set({
+                    left: clonedObj.left + 10,
+                    top: clonedObj.top + 10,
+                    evented: true,
+                });
+
+                // 描画
                 canvas.add(clonedObj);
+
+                // コピーベースのレクトから今作ったクローンへ属性コピーする
+                self.copy_editableRectAttr(copy_base,clonedObj);
+
+                // 入力欄として登録
+                self.regist_inputForm(clonedObj);
+
+                // 繰り返しコピペ用調整
+                _clipboard.top += 10;
+                _clipboard.left += 10;
             }
-            _clipboard.top += 10;
-            _clipboard.left += 10;
+
             canvas.setActiveObject(clonedObj);
             canvas.requestRenderAll();
+        });
+    }
 
-            // コピーベースからinput_type/defaultValueの同期 => text間のやり取り
-            clonedObj._objects[1].input_type = copy_base._objects[1].input_type;
-            clonedObj._objects[1].defaultValue = copy_base._objects[1].defaultValue;
-
-            // 入力欄として登録
-            self.regist_inputForm(clonedObj);
-        })
+    /*
+    * ２つのエディタブルレクトの属性コピー
+    */
+    this.copy_editableRectAttr = function(from_rect,to_rect){
+        // コピーベースからinput_type/defaultValueの同期 => text間のやり取り
+        to_rect._objects[1].input_type = from_rect._objects[1].input_type;
+        to_rect._objects[1].defaultValue = from_rect._objects[1].defaultValue;
     }
 
     /* UUIDゲッタ */
