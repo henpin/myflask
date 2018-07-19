@@ -41,10 +41,12 @@
             <div class="col-sm-6 col-sm-offset-3">
                 <h2 class="module-title font-alt"></h2>
             </div>
-        </div>
-        <div class="col-sm-12">    
-            <div class="col-sm-4 col-sm-offset-4">
-                <a class="btn btn-lg btn-primary col-sm-12" href="{{ url_for("load_form",_uuid=uuid) }}" role="button">入力する</a>
+            <div class="col-sm-12">    
+                <p class="btn-list col-sm-8 col-sm-offset-2">
+                    <a class="btn btn-lg btn-primary btn-circle col-sm-4" href="{{ url_for("load_form",_uuid=uuid) }}" role="button">入力する</a>
+                    <a class="btn btn-lg btn-success btn-circle col-sm-4" href="{{ url_for("edit_form",_uuid=uuid) }}" role="button">このフォームを編集する</a>
+                    <a class="btn btn-lg btn-danger btn-circle col-sm-4" href="{{ url_for("delete_form",_uuid=uuid) }}" role="button">このフォームを削除する</a>
+                </p>
             </div>
         </div>
     </section>
@@ -66,13 +68,6 @@
                     <h4 class="col-sm-2">Webページに埋め込む場合</h4>
                     <pre class="text-center col-sm-10">{{ iframe_tag }}</pre>
                 </div>
-            </div>
-        </div>
-    </section>
-    <section class="module-small">
-        <div class="col-sm-12">    
-            <div class="col-sm-4 col-sm-offset-4">
-                <a class="btn btn-lg btn-danger col-sm-12" href="{{ url_for("delete_form",_uuid=uuid) }}" role="button">このフォームを削除する</a>
             </div>
         </div>
     </section>

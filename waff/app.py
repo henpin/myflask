@@ -205,7 +205,7 @@ def generate_pdf(json_data,template_fileName):
             # データ抽出
             # posとW/Hから中点を抜く
             center_pos = pdf.pos2lefttop(
-                val["x"]/1.6 +(val["width"]/1.6)/2, val["y"]/1.6 +(val["height"]/1.6)/2
+                val["x"]/1.6 +(val["width"]/1.6)/2, val["y"]/1.6 +(val["height"]/1.6)/2 # 微調整
             )
             text = val["text"]
 
@@ -221,7 +221,7 @@ def generate_pdf(json_data,template_fileName):
 
             else :
                 # 中点ベースで書き込み
-                pdf.draw_centered_string(center_pos[0],center_pos[1]-3,text)
+                pdf.draw_centered_string(center_pos[0],center_pos[1]-4,text)
 
     return out_fileName
 
@@ -260,18 +260,50 @@ class PDFFormView(MethodView):
         _uuid = request.form["uuid"] # uuid抜く
         form_name = request.form["form_name"] # フォーム名抜く
 
-        # 保存
-        png_file = "/static/media/" +gen_png_fileName(_uuid,root=False) # 参照可能PNGファイルパス
-        pdfDB.insert_data(
-            _uuid = _uuid,
-            _json = json_data,
-            png_file = png_file,
-            form_name = form_name
-            )
+        # 存在すれば上書きupdate
+        if pdfDB.search_data(_uuid):
+            pdfDB.update_data(
+                form_name = form_name,
+                _json = json_data,
+                _uuid = _uuid
+                )
+        else :
+            # 普通に保存
+            png_file = "/static/media/" +gen_png_fileName(_uuid,root=False) # 参照可能PNGファイルパス
+            pdfDB.insert_data(
+                _uuid = _uuid,
+                _json = json_data,
+                png_file = png_file,
+                form_name = form_name
+                )
 
         # ホーム画面に飛ぶ
         flash(u"フォームを保存しました")
         return redirect(url_for('home'))
+
+class PDFFormEditView(MethodView):
+    """ フォーム編集ビュー """
+    def get(self,_uuid):
+        """ 編集せる"""
+        # データ抜く
+        result = pdfDB.search_data(_uuid) or abort(404) # リザルト抜く
+        # 値抜く
+        json_data = result["json"].replace(u"\\",u"\\\\").replace(u"'",u"\\'")
+        form_name = result["form_name"]
+
+        # コンテキスト構築
+        ns = {
+            "title" : u"フォーム編集",
+            "subtitle" : u"form_design",
+            "form_name" : form_name,
+            "uuid" : _uuid, # 基本UUID
+            "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
+            "seal_path" : "/static/img/tanaka.png", # はんこパス
+        }
+        
+        # フォーム作成画面レンダリング
+        return render_template("pdf_form.html", json_data=json_data, **ns)
+
 
 class PDFFormDeleteView(MethodView):
     """ 削除の為のヴー """
@@ -495,6 +527,26 @@ class CommitDataAPIView(MethodView):
         #return send_file(out_fileName, mimetype='application/pdf')
         return "OK"
 
+class CommitDataModelAPIView(MethodView):
+    """ コミットデータモデルAPI """
+    def get(self,_uuid):
+        """ コミットデータ抜く"""
+        # UUIDからデータJSON抜く
+        commit_data = pdf_commitDB.search_data(_uuid) or abort(404)
+        # フォームデータ抜く
+        commit_json_data = commit_data["json"]
+
+        return commit_json_data
+
+    def post(self):
+        """ 複数検索 """
+        # UUIDリストを抜く
+        uuid_list = json.loads(request.form["uuid_list"])
+        # くるくるして返す
+        result = [ pdf_commitDB.search_data(_uuid) for _uuid in uuid_list ]
+
+        return json.dumps(result)
+
 
 # Model API ----------------------------------------
 class PDFFormModelAPIView(MethodView):
@@ -525,7 +577,7 @@ def pdf_form_getJson_fromName(name):
     return json.dumps(form_data)
 
 
-# Etc ------
+# Etc ---------------------------------------------
 @app.route("/demo/")
 def demo():
     return render_template("demo.html")
@@ -539,6 +591,7 @@ app.add_url_rule('/pdf_form/output/inject/', view_func=PDFFormOutputAPIView.as_v
 # PDF Form
 app.add_url_rule('/pdf_form/save/', view_func=PDFFormView.as_view("save_form"))
 app.add_url_rule('/pdf_form/load/<string:_uuid>', view_func=PDFFormView.as_view("load_form"))
+app.add_url_rule('/pdf_form/edit/<string:_uuid>', view_func=PDFFormEditView.as_view("edit_form"))
 app.add_url_rule('/pdf_form/delete/<string:_uuid>', view_func=PDFFormDeleteView.as_view("delete_form"))
 # Iframe Form
 app.add_url_rule('/pdf_form/iframe_form/<string:_uuid>', view_func=IframePDFFormView.as_view("iframe_form"))
@@ -553,9 +606,10 @@ app.add_url_rule('/pdf_form/delete_data/<string:_uuid>', view_func=PDFFormCommit
 app.add_url_rule('/pdf_form/api/model/<string:_uuid>', view_func=PDFFormModelAPIView.as_view("pdfform_model_api_get"))
 app.add_url_rule('/pdf_form/api/model/', view_func=PDFFormModelAPIView.as_view("pdfform_model_api_post"))
 app.add_url_rule('/pdf_form/commit/inject/<string:_uuid>', view_func=CommitDataAPIView.as_view("commit_inject"))
-
+app.add_url_rule('/pdf_form/commit/get/<string:_uuid>', view_func=CommitDataModelAPIView.as_view("commitdata_model_api_get"))
+app.add_url_rule('/pdf_form/commit/get/', view_func=CommitDataModelAPIView.as_view("commitdata_model_api_post"))
 
 
 if __name__ == "__main__":
-    app.run(debug=False, host='0.0.0.0',port=8000)
+    app.run(debug=True, host='0.0.0.0',port=8000)
 

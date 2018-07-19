@@ -41,6 +41,13 @@ class PDFFormDB(BaseTinyTable):
             )
         return result and result[-1]
 
+    def update_data(self,form_name,_json,_uuid):
+        """ アップデート """
+        self.update({
+            "form_name" : form_name,
+            "json" : _json
+        },_uuid)
+
 
 class PDFFormCommitDataDB(BaseTinyTable):
     """ PDFフォームのコミットデータ """

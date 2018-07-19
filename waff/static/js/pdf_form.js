@@ -88,31 +88,10 @@ function App(){
                 }
             }
 
-            // 基盤のrect作成
-            var rect = new fabric.Rect({ 
-                width: x -startX, height: y -startY,
-                fill: '#3C8DBC', opacity: 0.2,
-                });
-
-            // 入力欄text作成
-            var tmp_name = '入力'+(input_num+1); // 一時テキスト
-            var text = new fabric.IText(tmp_name, {
-                width: x -startX, height: y -startY,
-                fontSize:16, textAlign: "center"
-            });
-
-            // group化してcanvas追加
-            var group = new fabric.Group([rect,text],{
-                left: startX, top: startY ,
-                cornerSize: 6, hasRotatingPoint : false,
-            });
-            canvas.add(group)
-
-            // センタリング定義
-            self.set_text_center(text,rect);
-
-            // 入力欄として保存
-            self.regist_inputForm(group);
+            // 入力欄レクトを生成
+            var width = x -startX;
+            var height = y -startY;
+            self.regist_inputRect(startX,startY,width,height); // 生成
         });
 
         // タッチイベント
@@ -170,6 +149,40 @@ function App(){
     }
 
     /*
+    * 新規入力欄RECT生成
+    */
+    this.regist_inputRect = function(x,y,width,height,intercepter){
+        // 基盤のrect作成
+        var rect = new fabric.Rect({ 
+            width: width, height: height,
+            fill: '#3C8DBC', opacity: 0.2,
+            });
+
+        // 入力欄text作成
+        var tmp_name = '入力'+(input_num+1); // 一時テキスト
+        var text = new fabric.IText(tmp_name, {
+            width: width, height: height,
+            fontSize:16, textAlign: "center"
+        });
+
+        // group化してcanvas追加
+        var group = new fabric.Group([rect,text],{
+            left: x, top: y,
+            cornerSize: 6, hasRotatingPoint : false,
+        });
+        canvas.add(group)
+
+        // インタセプターがあれば実行
+        if ( intercepter ){ intercepter(group); }
+
+        // センタリング定義
+        self.set_text_center(text,rect);
+
+        // 入力欄として保存
+        self.regist_inputForm(group);
+    }
+
+    /*
     * 新規入力欄の追加
     */
     this.regist_inputForm = function(group){
@@ -179,8 +192,11 @@ function App(){
 
         // テキスト設定
         text = group._objects[1]; // テキストエレメント抽出
-        text.text = input_name;
-        text.metaName = input_name;
+
+        // プリセットされたMetanameを尊重
+        var preset_metaName = text.metaName;
+        text.text = preset_metaName || input_name;
+        text.metaName = preset_metaName || input_name;
 
         // 入力欄保管庫に保存
         elem_holder[input_num] = group;
@@ -227,6 +243,9 @@ function App(){
         }
         if (text.defaultValue){ // defaultValueの逆反映
             $(".default-value[data-target='"+input_num+"'").val(text.defaultValue);
+        }
+        if (preset_metaName){ // メタ名の逆反映
+            $(".input-name[data-target='"+input_num+"'").val(preset_metaName);
         }
     }
 
@@ -277,6 +296,34 @@ function App(){
 
         // JSON化
         return JSON.stringify(data);
+    }
+
+    /* JSONデータからフォーム読み込み*/
+    this.load_formJson = function(_json){
+        mode = "creation"; // フォーム生成モード
+
+        // jsonからオブジェクトデータ構築
+        var json_data = JSON.parse(_json);
+
+        // くるくるしてインプットレクトの復元
+        Object.keys(json_data).forEach( metaName => {
+            // 値
+            var v = json_data[metaName];
+
+            // グループに属性値貼り付ける関数
+            var intercepter = (group) => {
+                // テキスト抜く
+                var text = group._objects[1];
+                // デフォルト値入れる
+                text.defaultValue = v.defaultValue || "";
+                // 入力タイプ入れる
+                text.input_type = v.input_type || "";
+                // メタ名を入れる
+                text.metaName = metaName;
+            }
+            // つくる
+            self.regist_inputRect(v.x,v.y,v.width,v.height,intercepter);
+        })
     }
 
     /* jsonデータからふぉーむつくる*/
@@ -404,27 +451,6 @@ function App(){
     this.init_domEvents = function(){
         // Nomal Events
         $('form').submit(function(e) { e.preventDefault();return false; });
-        $("#json-btn").click( e => { 
-            $("#json-out").val(JSON.stringify(canvas));
-        })
-        $("#load-json").click( e => { 
-            var json_val = $("#json-in").val();
-            // init
-            canvas = new fabric.Canvas('c');
-            canvas.loadFromJSON(json_val);
-        })
-        // My serialize
-        $("#json-btn2").click( e => { 
-            // jOSN生成
-            var json = self.gen_dataJSON();
-            // inputにぺタ
-            $("#json-out2").val(json);
-        })
-        // My Jinput
-        $("#load-json2").click( e => { 
-            // 読む
-            self.load_dataJson($("#json-in2").val());
-        });
     }
 
     /* キーイベントアクティベーション */
@@ -548,11 +574,13 @@ function App(){
     this.interactive_commit = function(elem){
         /* インタラクティブ送信モード*/
         if ( commit_mode == "interactive" ){
-            // データ構築
-            var data = {};
-            data[elem.metaName] = elem.text;
-            $.post(URL_FOR_COMMIT,{ "data": JSON.stringify(data) }); // Ajaxで送信
-            noty({text: 'データを送信しました', layout: 'topCenter', type: 'information', timeout:2000 });
+            setTimeout( _ => {
+                // データ構築
+                var data = {};
+                data[elem.metaName] = elem.text;
+                $.post(URL_FOR_COMMIT,{ "data": JSON.stringify(data) }); // Ajaxで送信
+                noty({text: 'データを送信しました', layout: 'topCenter', type: 'information', timeout:2000 });
+            },0);
         }
     }
 
@@ -807,9 +835,8 @@ function App(){
 
 
 // 読み込み時初期化
-var app = null; // 公開
+var app = new App();
 $(function(){ 
-    app = new App();
     app.init();
     })
 
