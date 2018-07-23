@@ -151,7 +151,7 @@ function App(){
     /*
     * 新規入力欄RECT生成
     */
-    this.regist_inputRect = function(x,y,width,height,intercepter){
+    this.regist_inputRect = function(x,y,width,height,alignment,intercepter){
         // 基盤のrect作成
         var rect = new fabric.Rect({ 
             width: width, height: height,
@@ -162,7 +162,7 @@ function App(){
         var tmp_name = '入力'+(input_num+1); // 一時テキスト
         var text = new fabric.IText(tmp_name, {
             width: width, height: height,
-            fontSize:16, textAlign: "center"
+            fontSize:16, textAlign: alignment
         });
 
         // group化してcanvas追加
@@ -176,7 +176,7 @@ function App(){
         if ( intercepter ){ intercepter(group); }
 
         // センタリング定義
-        self.set_text_center(text,rect);
+        self.set_text_center(text,rect,alignment);
 
         // 入力欄として保存
         self.regist_inputForm(group);
@@ -195,8 +195,10 @@ function App(){
 
         // プリセットされたMetanameを尊重
         var preset_metaName = text.metaName;
+        console.log(text)
         text.text = preset_metaName || input_name;
         text.metaName = preset_metaName || input_name;
+        text.align_type = text.align_type || alignment || "left"; // デフォルト値
 
         // 入力欄保管庫に保存
         elem_holder[input_num] = group;
@@ -216,6 +218,9 @@ function App(){
                 +'<option value="%jp_era%">元号</option> <option value="%month%">月(入力月)</option> <option value="%date%">日(入力日)</option>'
                 +'<option value="%day%">曜日(入力日)</option><option value="%name%">名前(入力者)</option>'
                 +'</datalist>'
+                +'<select class="align-type form-control col-sm-4" data-target="'+ input_num+'">' // アライメント
+                    +'<option value="left">左寄せ</option> <option value="center">中央揃え</option> <option value="right">右寄せ</option>'
+                +'</select>'
                 +'</div>'
             +'</div>'
             );
@@ -236,6 +241,10 @@ function App(){
             // データ型くっつける
             elem_holder[$(this).attr("data-target")].item(1).input_type = $(this).val();
         });
+        $(".align-type").change(function(){
+            // データ型くっつける
+            elem_holder[$(this).attr("data-target")].item(1).align_type = $(this).val();
+        });
 
         // 逆連関
         if (text.input_type){ // input_typeの逆反映
@@ -246,6 +255,9 @@ function App(){
         }
         if (preset_metaName){ // メタ名の逆反映
             $(".input-name[data-target='"+input_num+"'").val(preset_metaName);
+        }
+        if (text.align_type){ // アライメントの逆反映
+            $(".align-type[data-target='"+input_num+"'").val(text.align_type);
         }
     }
 
@@ -272,7 +284,8 @@ function App(){
                         font : text.fontSize,
                         order : i, // 順序
                         defaultValue : text.defaultValue, // デフォルト値
-                        input_type : text.input_type // 入力タイプ
+                        input_type : text.input_type, // 入力タイプ
+                        align_type: text.align_type,  // アライメント
                     };
                 }
             })
@@ -290,6 +303,7 @@ function App(){
                     font : elem.fontSize,
                     defaultValue : elem.defaultValue,
                     input_type : elem.input_type,
+                    align_type: elem.align_type,  // アライメント
                 };
             })
         }
@@ -309,6 +323,7 @@ function App(){
         Object.keys(json_data).forEach( metaName => {
             // 値
             var v = json_data[metaName];
+            var align_type = v.align_type || "center"; // 前方互換対応
 
             // グループに属性値貼り付ける関数
             var intercepter = (group) => {
@@ -320,9 +335,11 @@ function App(){
                 text.input_type = v.input_type || "";
                 // メタ名を入れる
                 text.metaName = metaName;
+                // アライメントを入れる
+                text.align_type = align_type;
             }
             // つくる
-            self.regist_inputRect(v.x,v.y,v.width,v.height,intercepter);
+            self.regist_inputRect(v.x,v.y,v.width,v.height,align_type,intercepter);
         })
     }
 
@@ -338,12 +355,14 @@ function App(){
             // データ
             var data = json_data[metaName];
             var input_type = data.input_type; // 入力タイプ
+            var align_type = data.align_type || "center"; // 前方互換対応
 
             // データ束縛関数
             var data_binding = elem => {
                 elem.metaName = metaName;
                 elem.defaultValue = data.defaultValue;
                 elem.input_type = input_type;
+                elem.align_type = align_type;
                 // 読み込み時の値の保存
                 elem.base_width = data.width;
                 elem.base_height = data.height;
@@ -384,7 +403,7 @@ function App(){
             } else { // 入力欄
                 // textつくる
                 var text = new fabric.IText(data.text, {
-                    fontSize:16, textAlign: "center",
+                    fontSize:16, textAlign: align_type,
                 });
 
                 // 属性地束縛
@@ -394,7 +413,7 @@ function App(){
                 text.set(settings);
 
                 // エディタぶるディクトつくる
-                self.add_editableRect(rect,text,input_type);
+                self.add_editableRect(rect,text,input_type,align_type);
                 // タバーにアッペンドする
                 tabber.push(text);
             }
@@ -484,7 +503,7 @@ function App(){
     新版。普通にやるver
     */
     var active_text = null; // フォーカス対象テキスト
-    this.add_editableRect = function(rect,text,input_type){
+    this.add_editableRect = function(rect,text,input_type,alignment){
         /* 大きさ変更等不可 */
         text.hasControls = false;
         text.hasBorders = false;
@@ -537,7 +556,7 @@ function App(){
         canvas.add(text);
 
         // センタリング定義
-        self.set_text_center(text,rect);
+        self.set_text_center(text,rect,alignment);
 
         // ElemListにほうりこむ
         elem_list.push(text);
@@ -790,7 +809,7 @@ function App(){
     /**
     * テキストをレクトの中央にする
     */
-    this.set_text_center = function(_text,_rect){
+    this.set_text_center = function(_text,_rect,alignment){
         // クロージャ用に名前再束縛
         var text = _text;
         var rect = _rect;
@@ -813,10 +832,22 @@ function App(){
             ]
 
             // 適用
-            text.set({
-                left : pos[0],
-                top : pos[1]
-            });
+            if ( alignment == "center" ){
+                text.set({
+                    left : pos[0],
+                    top : pos[1]
+                });
+            } else if ( alignment == "left" ){
+                text.set({
+                    top : pos[1]
+                });
+            } else if ( alignment == "right" ){ // 右寄せ
+                var right_x = (rect.left +rect.width);
+                text.set({
+                    left : right_x -text.width,
+                    top : pos[1]
+                });
+            }
         }
 
         // 変更イベントを束縛

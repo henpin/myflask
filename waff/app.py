@@ -208,6 +208,7 @@ def generate_pdf(json_data,template_fileName):
                 val["x"]/1.6 +(val["width"]/1.6)/2, val["y"]/1.6 +(val["height"]/1.6)/2 # 微調整
             )
             text = val["text"]
+            align_type = val["align_type"]
 
             # 画像のときは画像を張る
             if text.startswith("/static"):
@@ -219,9 +220,17 @@ def generate_pdf(json_data,template_fileName):
                 # 張る
                 pdf.paste_image(img_path, (center_pos[0]-width/2,center_pos[1]-height/2),(width,height)) # 画像分のサイズを差し引く
 
-            else :
+            elif ( align_type == "center"):
                 # 中点ベースで書き込み
                 pdf.draw_centered_string(center_pos[0],center_pos[1]-4,text)
+
+            elif ( align_type == "left" ):
+                # 左寄せ
+                pdf.draw_string(val["x"]/1.6, center_pos[1]-2, text)
+
+            elif ( align_type == "right" ):
+                # 右寄せ
+                pdf.draw_right_string(val["x"]/1.6 +val["width"]/1.6, center_pos[1]-4, text)
 
     return out_fileName
 
