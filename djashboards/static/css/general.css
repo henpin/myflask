@@ -37,3 +37,10 @@
     height: 100%;
 }
 
+/* shadow */
+.panel,.widget { box-shadow:0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); }
+
+/* bg */
+.page-container .page-content{ background-color: #f5f5f5 !important; background-image:none; }
+.breadcrumb { background-color: #f5f5f5; }
+

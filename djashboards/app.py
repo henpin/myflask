@@ -38,17 +38,29 @@ def home():
     """ ワードファイルアップロード基底ペー ジ"""
     # スラックタイムライン取得
     slack = SlackInterface().inject_defaults()
-    slack_timeline = slack.get_message(5) # タイムライン抜く
-    slack_timeline.reverse() # 昇順にする
+    try :
+        slack_timeline = slack.get_message(5) # タイムライン抜く
+        slack_timeline.reverse() # 昇順にする
+    except :
+        print "Slack ERROR"
+        slack_timeline = []
 
     # スラックタイムライン２
-    slack.inject2("channel_id","CB52R5BLJ")
-    slack_timeline2 = slack.get_message(5) # タイムライン抜く
-    slack_timeline2.reverse() # 昇順にする
+    try:
+        slack.inject2("channel_id","CB52R5BLJ")
+        slack_timeline2 = slack.get_message(5) # タイムライン抜く
+        slack_timeline2.reverse() # 昇順にする
+    except :
+        print "Slack ERROR"
+        slack_timeline2 = []
 
     # チャットワークタイムライン取得
-    chatwork = ChatworkInterface().inject_defaults()
-    chatwork_timeline = chatwork.get_message(5)
+    try:
+        chatwork = ChatworkInterface().inject_defaults()
+        chatwork_timeline = chatwork.get_message(5)
+    except :
+        print "Chatwork ERROR"
+        chatwork_timeline = []
 
     # メール取得
     mail = MailUtils().inject_defaults()
@@ -59,12 +71,16 @@ def home():
     }
 
     # チャット未読状況取得
-    channel_dataList = slack.get_channelInfo(["C9EQ2L2TA","C5HN61S3B","CB52R5BLJ","CALJSB350"]) # Slackのチャンネル情報を抜く
-    chatwork_unread_count = chatwork.get_unreads() # チャットワークの未読情報
-    channel_dataList.append({
-        "channel_name" : "chatwork",
-        "unread_count" : int(chatwork_unread_count)
-    })
+    try:
+        channel_dataList = slack.get_channelInfo(["C9EQ2L2TA","C5HN61S3B","CB52R5BLJ","CALJSB350"]) # Slackのチャンネル情報を抜く
+        chatwork_unread_count = chatwork.get_unreads() # チャットワークの未読情報
+        channel_dataList.append({
+            "channel_name" : "chatwork",
+            "unread_count" : int(chatwork_unread_count)
+        })
+    except :
+        print "Chat ERROR"
+        channel_dataList = []
 
     # 全フォームデータ抜く
     return render_template("home.html",
