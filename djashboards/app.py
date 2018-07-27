@@ -92,6 +92,24 @@ def home():
         **ns
         )
 
+@app.route("/slide")
+def slide():
+    """ スライド """
+    ns = {
+        "title" : u"スライドリスト",
+    }
+
+    return render_template("slide.html",**ns)
+
+@app.route("/sheet")
+def sheet():
+    """ シート """
+    ns = {
+        "title" : u"Google Sheet",
+    }
+
+    return render_template("sheet.html",**ns)
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

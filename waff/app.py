@@ -570,7 +570,6 @@ class PDFFormModelAPIView(MethodView):
         """ 複数検索 """
         # UUIDリストを抜く
         uuid_list = json.loads(request.form["uuid_list"])
-
         # くるくるして返す
         result = [ pdfDB.search_data(_uuid) for _uuid in uuid_list ]
 
