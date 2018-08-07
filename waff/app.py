@@ -584,6 +584,29 @@ def pdf_form_getJson_fromName(name):
     # 返す
     return json.dumps(form_data)
 
+# Commit API --------------------------------------
+class PDFFormCommitAPIView(MethodView):
+    """ コミットAPI """
+    def get(self,_uuid):
+        """ フォームUUIDから新しいからのコミットデータを生成 """
+        # フォームデータ抜く
+        form_data = pdfDB.search_data(_uuid) or abort(404) 
+
+        # JSONデータだけ加工する
+        json_data = json.loads(form_data["json"])
+        for val in json_data.values():
+            if isinstance(val,dict) and val.get("text"):
+                val["text"] = "" # テキストを空白に。何せデータ無いから
+
+        # コミットデータ生み出してUUIDもらう
+        commitData_uuid = pdf_commitDB.insert_data(
+            _json = json.dumps(json_data), # 加工したJSONをストリンギファイしてぶち込み
+            form_name =  form_data["form_name"],
+            form_uuid = form_data["uuid"],
+        )
+
+        return json.dumps({ "uuid" : commitData_uuid })
+
 
 # Etc ---------------------------------------------
 @app.route("/demo/")
@@ -613,9 +636,11 @@ app.add_url_rule('/pdf_form/delete_data/<string:_uuid>', view_func=PDFFormCommit
 # API
 app.add_url_rule('/pdf_form/api/model/<string:_uuid>', view_func=PDFFormModelAPIView.as_view("pdfform_model_api_get"))
 app.add_url_rule('/pdf_form/api/model/', view_func=PDFFormModelAPIView.as_view("pdfform_model_api_post"))
+app.add_url_rule('/pdf_form/api/commit/<string:_uuid>', view_func=PDFFormCommitAPIView.as_view("pdfform_commit_api"))
 app.add_url_rule('/pdf_form/commit/inject/<string:_uuid>', view_func=CommitDataAPIView.as_view("commit_inject"))
 app.add_url_rule('/pdf_form/commit/get/<string:_uuid>', view_func=CommitDataModelAPIView.as_view("commitdata_model_api_get"))
 app.add_url_rule('/pdf_form/commit/get/', view_func=CommitDataModelAPIView.as_view("commitdata_model_api_post"))
+
 
 
 if __name__ == "__main__":

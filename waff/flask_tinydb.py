@@ -59,7 +59,7 @@ class PDFFormCommitDataDB(BaseTinyTable):
 
     def insert_data(self,_json,form_name,form_uuid):
         """ コミットデータの保存 """
-        self.insert({
+        return self.insert({
             "json" : _json,
             "form_name" : form_name,
             "datetime" : datetime.now().isoformat(),
