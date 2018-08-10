@@ -63,6 +63,10 @@
                 app.set_commit_url("{{ url_for('commit_inject', _uuid=commit_uuid) }}");
                 app.set_commit_mode("interactive");
             {% endif %}
+            // フォーカス設定
+            {% if focus_list %}
+                app.set_focus(JSON.parse('{{focus_list|safe}}'));
+            {% endif %}
         });
     </script>
     <style type="text/css">

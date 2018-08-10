@@ -23,6 +23,7 @@ class PDFFormDB(BaseTinyTable):
         json_data = json.loads(_json) # とりま読む
         items = sorted(json_data.items() ,key = lambda item : item[1]["order"]) # items()して、値にオーダーってのが入ってるのでそれでソート
         metaNames = [ key for key,val in items ]  # キーだけ取り除く
+        approvalNames = [ key for key,val in items if val.get("input_type") == u"承認欄"] # 承認欄リスト
 
         # do インサーション
         self.insert({
@@ -31,6 +32,7 @@ class PDFFormDB(BaseTinyTable):
             "json" : _json,
             "png_file" : png_file,
             "metaNames" : metaNames,  # メタネームリスト
+            "approvalNames": approvalNames, # 承認名リスト
         })
 
     def search_data(self,_uuid):

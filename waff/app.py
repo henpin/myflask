@@ -356,6 +356,8 @@ class IframeCommitDataView(MethodView):
         # 送信モード拡張設定
         commit_mode = request.args.get("commit_mode") or "ajax"
         if commit_mode not in ("interactive","ajax"): abort(404)
+        # フォーカス拡張設定
+        focus_list = request.args.get("focus").split(",") if request.args.get("focus") else []
 
         # 保存済みフォームを抜く
         result = pdf_commitDB.search_data(_uuid) or abort(404) # 抜く
@@ -380,6 +382,7 @@ class IframeCommitDataView(MethodView):
                 "commit_mode" : commit_mode, # コミットモード
                 "png_file" : "/static/media/" +gen_png_fileName(_uuid,root=False), # ファイル名
                 "seal_path" : "/static/img/tanaka.png", # はんこパス
+                "focus_list": json.dumps(focus_list), # フォーカス文字列リスト
             }
             
             # フォーム作成画面レンダリング

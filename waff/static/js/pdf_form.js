@@ -162,7 +162,7 @@ function App(){
         var tmp_name = '入力'+(input_num+1); // 一時テキスト
         var text = new fabric.IText(tmp_name, {
             width: width, height: height,
-            fontSize:16, textAlign: alignment
+            fontSize:16, textAlign: alignment || "left"
         });
 
         // group化してcanvas追加
@@ -198,7 +198,7 @@ function App(){
         console.log(text)
         text.text = preset_metaName || input_name;
         text.metaName = preset_metaName || input_name;
-        text.align_type = text.align_type || alignment || "left"; // デフォルト値
+        text.align_type = text.align_type || text.textAlign || "left"; // デフォルト値
 
         // 入力欄保管庫に保存
         elem_holder[input_num] = group;
@@ -861,6 +861,24 @@ function App(){
         text.do_centering = do_centering;
         // とりまかける
         do_centering();
+    }
+
+    /*
+    * テキストボックスをフォーカスする
+    */
+    this.set_focus = function(nameList){
+        // エレムリストから対象テキストボックスを探す
+        nameList.forEach( name => {
+            elem_list.forEach( elem => {
+                // みつけたらハイライト
+                if ( elem.metaName == name ){
+                    // 赤くする
+                    elem.set({
+                        fill: "red"
+                    });
+                }
+            });
+        });
     }
 }
 
