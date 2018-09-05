@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-6 doc">
+        <iframe src="https://docs.google.com/document/d/1BJlNj7lmo2YKPqGc-y6gbkWlS8b1xC8BtU5dE7gxuD4/edit?usp=sharing" frameborder="0"></iframe>
+    </div>
+    <div class="col-sm-6 doc">
+        <iframe src="https://docs.google.com/spreadsheets/d/1amnfjg-b0Sb_Y5yAgvEqtt4Z49U83HrrVUAZQnG4N1s/edit?usp=sharing" frameBorder="0"></iframe>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function(){
+        $(".doc").css("height",1000)
+    })
+</script>
+{% endblock %}

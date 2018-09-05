@@ -36,6 +36,7 @@ app.secret_key = str(uuid.uuid4())
 @app.route("/")
 def home():
     """ ワードファイルアップロード基底ペー ジ"""
+    """
     # スラックタイムライン取得
     slack = SlackInterface().inject_defaults()
     try :
@@ -53,6 +54,10 @@ def home():
     except :
         print "Slack ERROR"
         slack_timeline2 = []
+    """
+    # 重いのでOFF
+    slack_timeline = []
+    slack_timeline2 = []
 
     # チャットワークタイムライン取得
     try:
@@ -61,6 +66,8 @@ def home():
     except :
         print "Chatwork ERROR"
         chatwork_timeline = []
+
+    chatwork_timeline = []
 
     # メール取得
     mail = MailUtils().inject_defaults()
