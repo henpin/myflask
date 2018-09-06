@@ -60,12 +60,14 @@ def home():
     slack_timeline2 = []
 
     # チャットワークタイムライン取得
+    """
     try:
         chatwork = ChatworkInterface().inject_defaults()
         chatwork_timeline = chatwork.get_message(5)
     except :
         print "Chatwork ERROR"
         chatwork_timeline = []
+    """
 
     chatwork_timeline = []
 
@@ -78,6 +80,8 @@ def home():
     }
 
     # チャット未読状況取得
+    channel_dataList = []
+    """
     try:
         channel_dataList = slack.get_channelInfo(["C9EQ2L2TA","C5HN61S3B","CB52R5BLJ","CALJSB350"]) # Slackのチャンネル情報を抜く
         chatwork_unread_count = chatwork.get_unreads() # チャットワークの未読情報
@@ -88,6 +92,7 @@ def home():
     except :
         print "Chat ERROR"
         channel_dataList = []
+    """
 
     # 全フォームデータ抜く
     return render_template("home.html",
