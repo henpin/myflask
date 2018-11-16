@@ -19,3 +19,4 @@ tinycss2
 WeasyPrint
 webencodings
 Werkzeug
+flask-cors
