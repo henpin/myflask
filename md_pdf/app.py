@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 from flask_weasyprint import HTML, render_pdf
+import markdown2
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_html():
-    html = "<h1>ok</h1>"
+@app.route('/',methods=["POST"])
+def md2pdf():
+    """ mdをPDFに """
+    # MD抜く
+    md = request.form['md']
+    # HTML化
+    html = markdown2.markdown(md,extras=["tables","fenc-code-blocks","code-color"])
+    # PDF化して返す
     return render_pdf(HTML(string=html))
 
 if __name__ == "__main__":
