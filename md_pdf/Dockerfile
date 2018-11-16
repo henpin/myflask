@@ -26,6 +26,6 @@ RUN unzip -d noto NotoSerifCJKjp-hinted.zip \
 
 RUN git clone https://747790320b96074cf5a35551eef6257eac25e74a:x-oauth-basic@github.com/henpin/myflask.git \
  && cd myflask/md_pdf \
- && pip install -r requirements.txt \
+ && pip install -r requirements.txt
 
 CMD python myflask/md_pdf/app.py
