@@ -2,8 +2,10 @@
 from flask import Flask, render_template, url_for, request
 from flask_weasyprint import HTML, render_pdf
 import markdown2
+import os
 
 app = Flask(__name__)
+port = os.environ["PORT"] or "8000" # HEROKU用
 
 @app.route('/',methods=["POST","GET"])
 def md2pdf():
@@ -20,4 +22,4 @@ def md2pdf():
         return render_pdf(HTML(string=html))
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0',port=8000)
+    app.run(debug=True, host='0.0.0.0',port=port)
