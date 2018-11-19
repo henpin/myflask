@@ -17,7 +17,8 @@ WORKDIR /opt
 
 ENV WEASYPRINT_VERSION 0.40
 
-ADD https://noto-website.storage.googleapis.com/pkgs/NotoSerifCJKjp-hinted.zip .
+#ADD https://noto-website.storage.googleapis.com/pkgs/NotoSerifCJKjp-hinted.zip .
+ADD NotoSerifCJKjp-hinted.zip .
 RUN unzip -d noto NotoSerifCJKjp-hinted.zip \
  && mkdir -p /usr/share/fonts/opentype \
  && mv -fv noto /usr/share/fonts/opentype/noto \

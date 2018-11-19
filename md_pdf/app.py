@@ -9,18 +9,20 @@ app = Flask(__name__)
 
 # Enable Cross origin Access
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
 
 # HEROKU用
 port = os.environ.get("PORT") or "8000"
 
 
 @app.route('/',methods=["POST","GET"])
-@cross_origin()
 def md2pdf():
     """ mdをPDFに """
     if request.method == "GET":
-        return "RUNNING"
+        md = "# MD PDF Program\n ## STATE: is runnning"
+        # HTML化
+        html = markdown2.markdown(md,extras=["tables","fenc-code-blocks","code-color"])
+        # PDF化して返す
+        return render_pdf(HTML(string=html))
 
     elif request.method == "POST":
         # MD抜く
