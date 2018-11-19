@@ -26,7 +26,7 @@ def md2pdf():
 
     elif request.method == "POST":
         # MD抜く
-        md = request.form['md']
+        md = request.form['md'] or "# No MD"
         # HTML化
         html = markdown2.markdown(md,extras=["tables","fenc-code-blocks","code-color"])
         # PDF化して返す
