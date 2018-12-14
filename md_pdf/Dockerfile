@@ -17,17 +17,19 @@ WORKDIR /opt
 
 ENV WEASYPRINT_VERSION 0.40
 
-#ADD https://noto-website.storage.googleapis.com/pkgs/NotoSerifCJKjp-hinted.zip .
-ADD NotoSerifCJKjp-hinted.zip .
-RUN unzip -d noto NotoSerifCJKjp-hinted.zip \
- && mkdir -p /usr/share/fonts/opentype \
- && mv -fv noto /usr/share/fonts/opentype/noto \
- && rm -rfv NotoSerifCJKjp-hinted.zip \
- && fc-cache -fv
+#ADD NotoSerifCJKjp-hinted.zip .
+#RUN unzip -d noto NotoSerifCJKjp-hinted.zip \
+# && mkdir -p /usr/share/fonts/opentype \
+# && mv -fv noto /usr/share/fonts/opentype/noto \
+# && rm -rfv NotoSerifCJKjp-hinted.zip \
+# && fc-cache -fv
 
-ADD Dockerfile .
-RUN git clone https://747790320b96074cf5a35551eef6257eac25e74a:x-oauth-basic@github.com/henpin/myflask.git \
- && cd myflask/md_pdf \
- && pip install -r requirements.txt
+#ADD . /opt/app
+#ADD Dockerfile .
+#RUN git clone https://747790320b96074cf5a35551eef6257eac25e74a:x-oauth-basic@github.com/henpin/myflask.git \
+ #&& cd myflask/md_pdf \
+ #&& pip install -r requirements.txt
 
-CMD python myflask/md_pdf/app.py
+ADD requirements.txt .
+RUN pip install -r requirements.txt
+#CMD python app/app.py

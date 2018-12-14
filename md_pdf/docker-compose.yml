@@ -1,0 +1,12 @@
+version: '3'
+services:
+    md_pdf:
+        build: "."
+        restart: always
+        ports: 
+            - "80:8000"
+        command: python app/app.py
+        volumes:
+            - .:/opt/app
+        tty: true
+    
